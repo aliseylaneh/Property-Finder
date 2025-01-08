@@ -1,0 +1,92 @@
+version: "3.9"
+
+services:
+  db:
+    image: postgres:latest
+    container_name: postgres
+    ports:
+      - 5432:5432
+    environment:
+      - POSTGRES_DB=property_finder
+      - POSTGRES_USER=skyloov
+      - POSTGRES_PASSWORD=skyloov1234
+    volumes:
+      - postgres-data:/var/lib/postgresql/data
+  elasticsearch:
+    restart: always
+    image: elasticsearch:7.6.1
+    container_name: jomle-elasticsearch
+    ports:
+      - "9200:9200"
+      - "9300:9300"
+    environment:
+      - ES_JAVA_OPTS = "-Xmx256m -Xms256m"
+      - discovery.type=single-node
+      - xpack.security.enabled = false
+      - TimeOutStartSec = 600
+    volumes:
+      - es-data:/usr/share/elasticsearch/data
+
+  #  django:
+  #    build:
+  #      context: .
+  #      dockerfile: docker/production.Dockerfile
+  #    container_name: django
+  #    command: ./docker/web_entrypoint.sh
+  #    environment:
+  #      - DATABASE_URL=psql://skyloov:skyloov1234@db:5432/property_finder
+  #      - CELERY_BROKER_URL=amqp://guest:guest@rabbitmq:5672//
+  #    volumes:
+  #      - .:/app
+  #    ports:
+  #      - "8000:8000"
+  #    depends_on:
+  #      - db
+  #    restart: on-failure
+  redis:
+    restart: always
+    image: redis:latest
+    container_name: simap_redis
+    ports:
+      - 6379:6379
+    volumes:
+      - redis-data:/data
+
+
+  celery:
+    build:
+      context: .
+      dockerfile: docker/production.Dockerfile
+    # command: celery -A property_finder.tasks worker -l info --without-gossip --without-mingle --without-heartbeat
+    container_name: worker
+    command: ./docker/celery_entrypoint.sh
+    environment:
+      - DATABASE_URL=psql://skyloov:skyloov1234@db:5432/property_finder
+      - CELERY_BROKER_URL=amqp://guest:guest@rabbitmq:5672//
+    volumes:
+      - .:/app
+    depends_on:
+      - db
+    restart: on-failure
+
+  beats:
+    build:
+      context: .
+      dockerfile: docker/production.Dockerfile
+    # command: celery -A property_finder.tasks beat -l info --scheduler django_celery_beat.schedulers:DatabaseScheduler
+    container_name: beats
+    command: ./docker/beats_entrypoint.sh
+    environment:
+      - DATABASE_URL=psql://skyloov:skyloov1234@db:5432/property_finder
+      - CELERY_BROKER_URL=amqp://guest:guest@rabbitmq:5672//
+    volumes:
+      - .:/app
+    depends_on:
+      - db
+    restart: on-failure
+
+
+volumes:
+  es-data:
+  postgres-data:
+  redis-data:
