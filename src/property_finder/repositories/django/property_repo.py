@@ -1,0 +1,44 @@
+from typing import Any, Dict
+
+from django.db import transaction
+from django.db.models import QuerySet
+
+from src.property_finder.models import Property
+from src.property_finder.models.exceptions.property import PropertyNotFound
+from src.property_finder.repositories.django.base_repo import ICRUDRepository
+
+
+class PropertyRepository(ICRUDRepository):
+
+    async def all(self) -> QuerySet[Property]:
+        queryset = await Property.objects.prefetch_related("agent").all()
+        return queryset
+
+    async def filter_by_fields(self, data: Dict[str:Any]) -> QuerySet[Property]:
+        queryset = await self.all()
+        if not data:
+            return queryset
+        return queryset  # TODO implement filters
+
+    async def find_by_id(self, pk: int) -> Property:
+        instance = await Property.objects.filter(pk=pk).afirst()
+        if not instance:
+            raise PropertyNotFound()
+        return instance
+
+    async def create(self, name: str, email: str, phone_number: str) -> Property:
+        with transaction.atomic():
+            instance = await Property.objects.acreate(name=name, email=email, phone_number=phone_number)
+            return instance
+
+    async def delete(self, pk: int):
+        with transaction.atomic():
+            await Property.objects.filter(pk=pk).adelete()
+
+    async def update(self, pk: int, data: Dict[str, Any]) -> Property:
+        with transaction.atomic():
+            instance = await self.find_by_id(pk=pk)
+            instance, is_updated = await self.instance_update(instance=instance,
+                                                              data=data,
+                                                              fields=list(data.keys()))
+            return instance

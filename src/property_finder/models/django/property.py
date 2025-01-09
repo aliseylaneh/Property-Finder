@@ -1,6 +1,6 @@
 from django.db import models
 
-from src.property_finder.models.agent import Agent
+from src.property_finder.models.django.agent import Agent
 
 
 class PropertyTypeDepth(models.IntegerChoices):

@@ -5,7 +5,7 @@ from django.db.models import QuerySet
 
 from src.property_finder.models import Agent
 from src.property_finder.models.exceptions.agent import AgentNotFound
-from src.property_finder.repositories.postgres.base_repo import ICRUDRepository
+from src.property_finder.repositories.django.base_repo import ICRUDRepository
 
 
 class AgentRepository(ICRUDRepository):
@@ -20,7 +20,7 @@ class AgentRepository(ICRUDRepository):
         return queryset  # TODO implement filters
 
     async def find_by_id(self, pk: int) -> Agent:
-        instance = await Agent.objects.afilter(pk=pk).first()
+        instance = await Agent.objects.filter(pk=pk).afirst()
         if not instance:
             raise AgentNotFound()
         return instance
