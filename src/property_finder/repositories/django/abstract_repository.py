@@ -6,7 +6,7 @@ from django_microservice_common.types.types import DjangoModelType
 from src.property_finder.repositories import AbstractRepository
 
 
-class ICRUDRepository(AbstractRepository):
+class ICRUDDjangoRepository(AbstractRepository):
     @abstractmethod
     async def all(self) -> Any:
         raise NotImplementedError
@@ -31,8 +31,7 @@ class ICRUDRepository(AbstractRepository):
     async def update(self, *args, **kwargs) -> Any:
         raise NotImplementedError
 
-    @classmethod
-    async def instance_update(cls,
+    async def instance_update(self,
                               instance: DjangoModelType,
                               fields: List[str],
                               data: Dict[str, Any]) -> Tuple[DjangoModelType, bool]:

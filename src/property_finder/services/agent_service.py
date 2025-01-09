@@ -1,11 +1,11 @@
 from src.property_finder.models import Agent
-from src.property_finder.repositories.django.agent_repo import AgentRepository
+from src.property_finder.repositories.django.agent_repo import AgentDjangoRepository
 
 
 class AgentService:
 
     def __init__(self):
-        self._django_repository = AgentRepository()
+        self._django_repository = AgentDjangoRepository()
         self._elastic_repository = None
 
     async def create_agent(self, name: str, email: str, phone_number: str) -> Agent:

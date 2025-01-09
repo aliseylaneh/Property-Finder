@@ -5,10 +5,10 @@ from django.db.models import QuerySet
 
 from src.property_finder.models import Property
 from src.property_finder.models.exceptions.property import PropertyNotFound
-from src.property_finder.repositories.django.abstract_repository import ICRUDRepository
+from src.property_finder.repositories.django.abstract_repository import ICRUDDjangoRepository
 
 
-class PropertyRepository(ICRUDRepository):
+class PropertyDjangoRepository(ICRUDDjangoRepository):
 
     async def all(self) -> QuerySet[Property]:
         queryset = await Property.objects.prefetch_related("agent").all()
