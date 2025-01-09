@@ -12,6 +12,7 @@ services:
       - POSTGRES_PASSWORD=skyloov1234
     volumes:
       - postgres-data:/var/lib/postgresql/data
+
   elasticsearch:
     restart: always
     image: elasticsearch:7.6.1
@@ -27,22 +28,6 @@ services:
     volumes:
       - es-data:/usr/share/elasticsearch/data
 
-  #  django:
-  #    build:
-  #      context: .
-  #      dockerfile: docker/production.Dockerfile
-  #    container_name: django
-  #    command: ./docker/web_entrypoint.sh
-  #    environment:
-  #      - DATABASE_URL=psql://skyloov:skyloov1234@db:5432/property_finder
-  #      - CELERY_BROKER_URL=amqp://guest:guest@rabbitmq:5672//
-  #    volumes:
-  #      - .:/app
-  #    ports:
-  #      - "8000:8000"
-  #    depends_on:
-  #      - db
-  #    restart: on-failure
   redis:
     restart: always
     image: redis:latest
@@ -51,7 +36,6 @@ services:
       - 6379:6379
     volumes:
       - redis-data:/data
-
 
   celery:
     build:
@@ -86,8 +70,44 @@ services:
       - celery
     restart: on-failure
 
+  kafka:
+    image: apache/kafka-native
+    container_name: kafka
+    ports:
+      - "9092:9092"
+    environment:
+      # Configure listeners for both docker and host communication
+      KAFKA_LISTENERS: CONTROLLER://localhost:9091,HOST://0.0.0.0:9092,DOCKER://0.0.0.0:9093
+      KAFKA_ADVERTISED_LISTENERS: HOST://localhost:9092,DOCKER://kafka:9093
+      KAFKA_LISTENER_SECURITY_PROTOCOL_MAP: CONTROLLER:PLAINTEXT,DOCKER:PLAINTEXT,HOST:PLAINTEXT
+
+      # Settings required for KRaft mode
+      KAFKA_NODE_ID: 1
+      KAFKA_PROCESS_ROLES: broker,controller
+      KAFKA_CONTROLLER_LISTENER_NAMES: CONTROLLER
+      KAFKA_CONTROLLER_QUORUM_VOTERS: 1@localhost:9091
+
+      # Listener to use for broker-to-broker communication
+      KAFKA_INTER_BROKER_LISTENER_NAME: DOCKER
+
+      # Required for a single node cluster
+      KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR: 1
+
+  kafka-ui:
+    container_name: kafka-ui
+    image: provectuslabs/kafka-ui:latest
+    ports:
+      - 8080:8080
+    depends_on:
+      - kafka
+    environment:
+      DYNAMIC_CONFIG_ENABLED: 'true'
+      KAFKA_CLUSTERS_0_NAME: property_finder
+      KAFKA_CLUSTERS_0_BOOTSTRAPSERVERS: "kafka:9093"
+
 
 volumes:
   es-data:
   postgres-data:
   redis-data:
+  kafka-ui-data:
