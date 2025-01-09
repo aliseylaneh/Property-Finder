@@ -4,7 +4,7 @@ from config.env_conf.env import env
 
 REDIS_HOST = env('REDIS_HOST')
 REDIS_PORT = env('REDIS_PORT')
-CELERY_BROKER_URL = env('CELERY_BROKER_URL', default='amqp://guest:guest@localhost//')
+CELERY_BROKER_URL = 'redis://{host}:{port}/0'.format(host=REDIS_HOST, port=REDIS_PORT)
 CELERY_RESULT_BACKEND = 'redis://{host}:{port}'.format(host=REDIS_HOST, port=REDIS_PORT)
 CELERY_BEAT_SCHEDULER = 'django_celery_beat.schedulers:DatabaseScheduler'
 

@@ -8,12 +8,16 @@ RUN pip install poetry
 RUN mkdir /app
 
 WORKDIR /app
-
+COPY README.md ./
 COPY pyproject.toml poetry.lock ./
 RUN poetry config virtualenvs.create false
 RUN poetry lock
-RUN poetry install
+RUN poetry install --no-root
 
 
 # Get the django project into the docker container
 COPY . /app/
+
+RUN chmod +x ./docker/celery_entrypoint.sh
+RUN chmod +x ./docker/beats_entrypoint.sh
+
