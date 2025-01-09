@@ -5,7 +5,7 @@ from django.db.models import QuerySet
 
 from src.property_finder.models import Property
 from src.property_finder.models.exceptions.property import PropertyNotFound
-from src.property_finder.repositories.django.base_repo import ICRUDRepository
+from src.property_finder.repositories.django.abstract_repository import ICRUDRepository
 
 
 class PropertyRepository(ICRUDRepository):

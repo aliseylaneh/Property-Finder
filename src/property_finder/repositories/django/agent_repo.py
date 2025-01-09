@@ -5,7 +5,7 @@ from django.db.models import QuerySet
 
 from src.property_finder.models import Agent
 from src.property_finder.models.exceptions.agent import AgentNotFound
-from src.property_finder.repositories.django.base_repo import ICRUDRepository
+from src.property_finder.repositories.django.abstract_repository import ICRUDRepository
 
 
 class AgentRepository(ICRUDRepository):
