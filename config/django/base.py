@@ -14,11 +14,11 @@ ALLOWED_HOSTS = env.list('ALLOWED_HOSTS', default=['*'])
 
 # Application definition
 LOCAL_APPS = [
+    'src.property_finder'
 ]
 
 THIRD_PARTY_APPS = [
     'rest_framework',
-    'rest_framework_simplejwt.token_blacklist',
     'django_filters',
     'django_celery_results',
     'django_celery_beat',
@@ -76,7 +76,7 @@ WSGI_APPLICATION = 'config.wsgi.application'
 
 DATABASES = {
     'default': env.db('DATABASE_URL',
-                      default='psql://skyloov:skyloov1234@property_finder-db.skyloov.svc:5432/property_finder'),
+                      default='psql://skyloov:skyloov1234@localhost:5432/property_finder'),
 }
 
 DATABASES['default']['ATOMIC_REQUESTS'] = True
