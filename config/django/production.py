@@ -1,5 +1,5 @@
+from config.env_conf.env import env
 from .base import *  # noqa
-from config.env import env
 
 DEBUG = False
 
