@@ -1,6 +1,6 @@
 # This docker file is used for production
 # Creating image based on official python3 image
-FROM python:3.11-slim-bullseye
+FROM python:3.13-rc-slim-bullseye
 
 # Installing all python dependencies
 RUN pip install poetry
