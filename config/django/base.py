@@ -155,9 +155,7 @@ CSRF_TRUSTED_ORIGINS = ["http://127.0.0.1,http://localhost"]
 CORS_ALLOWED_ORIGINS = ["http://127.0.0.1", "http://localhost"]
 
 from config.settings.cors import *  # noqa
-# from config.settings.jwt import *  # noqa
-from config.settings.sessions import *  # noqa
 from config.settings.celery import *  # noqa
 from config.settings.swagger import *  # noqa
+from config.settings.kafka import *  # noqa
 from config.asgi import *  # noqa
-# from config.settings.email_sending import *  # noqa
