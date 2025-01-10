@@ -1,4 +1,3 @@
-from abc import abstractmethod
 from typing import Any, Dict, List, Tuple
 
 from django_microservice_common.types.types import DjangoModelType
@@ -6,30 +5,7 @@ from django_microservice_common.types.types import DjangoModelType
 from src.property_finder.repositories import AbstractRepository
 
 
-class ICRUDDjangoRepository(AbstractRepository):
-    @abstractmethod
-    def all(self) -> Any:
-        raise NotImplementedError
-
-    @abstractmethod
-    def filter_by_fields(self, *args, **kwargs) -> Any:
-        raise NotImplementedError
-
-    @abstractmethod
-    def find_by_id(self, *args, **kwargs) -> Any:
-        raise NotImplementedError
-
-    @abstractmethod
-    def create(self, *args, **kwargs) -> Any:
-        raise NotImplementedError
-
-    @abstractmethod
-    def delete(self, *args, **kwargs):
-        raise NotImplementedError
-
-    @abstractmethod
-    def update(self, *args, **kwargs) -> Any:
-        raise NotImplementedError
+class BaseRepository(AbstractRepository):
 
     def instance_update(self,
                         instance: DjangoModelType,

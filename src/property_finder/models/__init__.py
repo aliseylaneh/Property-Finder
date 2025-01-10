@@ -1,2 +1,2 @@
-from src.property_finder.models.django.agent import *
-from src.property_finder.models.django.property import *
+from src.property_finder.models.models.agent import *
+from src.property_finder.models.models.property import *

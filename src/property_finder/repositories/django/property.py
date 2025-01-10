@@ -5,20 +5,14 @@ from django.db.models import QuerySet
 
 from src.property_finder.models import Property
 from src.property_finder.models.exceptions.property import PropertyNotFound
-from src.property_finder.repositories.django.abstract_repository import ICRUDDjangoRepository
+from src.property_finder.repositories.django.base import BaseRepository
 
 
-class PropertyDjangoRepository(ICRUDDjangoRepository):
+class PropertyDjangoRepository(BaseRepository):
 
     def all(self) -> QuerySet[Property]:
         queryset = Property.objects.prefetch_related("agent").all()
         return queryset
-
-    def filter_by_fields(self, data: Dict[str, Any]) -> QuerySet[Property]:
-        queryset = self.all()
-        if not data:
-            return queryset
-        return queryset  # TODO implement filters
 
     def find_by_id(self, pk: int) -> Property:
         instance = Property.objects.filter(pk=pk).first()

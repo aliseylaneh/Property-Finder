@@ -1,8 +1,8 @@
 from typing import Any, Dict
 
 from src.property_finder.models import Property
-from src.property_finder.repositories.django.property_repo import PropertyDjangoRepository
-from src.property_finder.repositories.es.property_repo import PropertyElasticSearchRepository
+from src.property_finder.repositories.django.property import PropertyDjangoRepository
+from src.property_finder.repositories.es.es_property import PropertyElasticSearchRepository
 
 
 class PropertyService:

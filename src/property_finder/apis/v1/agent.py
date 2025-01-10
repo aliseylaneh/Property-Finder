@@ -48,7 +48,7 @@ class DeleteAgentApi(APIView):
         self.usecase = DeleteAgentUseCase()
 
     @extend_schema(request=UpdateAgentInputSerializer, responses=UpdateAgentOutputSerializer, tags=['Agent'])
-    def delete(self, agent_id: int, request):
+    def delete(self, request, agent_id: int):
         try:
             self.usecase.execute(pk=agent_id)
             return MessageResponse("Agent successfully deleted.")

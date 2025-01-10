@@ -24,6 +24,7 @@ uvicorn = "^0.34.0"
 elasticsearch-dsl = {extras = ["async"], version = "^8.17.1"}
 kafka-python = "^2.0.2"
 celery = {extras = ["redis"], version = "^5.4.0"}
+django-elasticsearch-dsl = "^8.0"
 
 
 [build-system]

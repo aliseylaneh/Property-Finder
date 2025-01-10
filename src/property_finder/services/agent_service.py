@@ -1,8 +1,8 @@
 from typing import Any, Dict
 
 from src.property_finder.models import Agent
-from src.property_finder.repositories.django.agent_repo import AgentDjangoRepository
-from src.property_finder.repositories.es.agent_repo import AgentElasticSearchRepository
+from src.property_finder.repositories.django.agent import AgentDjangoRepository
+from src.property_finder.repositories.es.es_agent import AgentElasticSearchRepository
 
 
 class AgentService:
