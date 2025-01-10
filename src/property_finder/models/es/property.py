@@ -1,7 +1,7 @@
-from elasticsearch_dsl import AsyncDocument, Keyword, Text
+from elasticsearch_dsl import Document, Keyword, Text
 
 
-class PropertyDocument(AsyncDocument):
+class PropertyDocument(Document):
     main_type = Text()
     sub_type = Text()
     title = Text()

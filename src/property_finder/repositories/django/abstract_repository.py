@@ -8,33 +8,33 @@ from src.property_finder.repositories import AbstractRepository
 
 class ICRUDDjangoRepository(AbstractRepository):
     @abstractmethod
-    async def all(self) -> Any:
+    def all(self) -> Any:
         raise NotImplementedError
 
     @abstractmethod
-    async def filter_by_fields(self, *args, **kwargs) -> Any:
+    def filter_by_fields(self, *args, **kwargs) -> Any:
         raise NotImplementedError
 
     @abstractmethod
-    async def find_by_id(self, *args, **kwargs) -> Any:
+    def find_by_id(self, *args, **kwargs) -> Any:
         raise NotImplementedError
 
     @abstractmethod
-    async def create(self, *args, **kwargs) -> Any:
+    def create(self, *args, **kwargs) -> Any:
         raise NotImplementedError
 
     @abstractmethod
-    async def delete(self, *args, **kwargs):
+    def delete(self, *args, **kwargs):
         raise NotImplementedError
 
     @abstractmethod
-    async def update(self, *args, **kwargs) -> Any:
+    def update(self, *args, **kwargs) -> Any:
         raise NotImplementedError
 
-    async def instance_update(self,
-                              instance: DjangoModelType,
-                              fields: List[str],
-                              data: Dict[str, Any]) -> Tuple[DjangoModelType, bool]:
+    def instance_update(self,
+                        instance: DjangoModelType,
+                        fields: List[str],
+                        data: Dict[str, Any]) -> Tuple[DjangoModelType, bool]:
         """
         Generic update service meant to be reused in local update repositories
         For example:
@@ -61,5 +61,6 @@ class ICRUDDjangoRepository(AbstractRepository):
             # Update only the fields that are meant to be updated.
             # Django's docs reference:
             # https://docs.djangoproject.com/en/dev/ref/models/instances/#specifying-which-fields-to-save
-            await instance.asave(update_fields=fields)
+            instance.save(update_fields=fields)
+
         return instance, has_updated

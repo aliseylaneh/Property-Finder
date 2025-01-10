@@ -6,17 +6,17 @@ from src.property_finder.repositories import AbstractRepository
 
 class IElasticSearchRepository(AbstractRepository):
     @abstractmethod
-    async def index(self, *args, **kwargs) -> Any:
+    def index(self, *args, **kwargs) -> Any:
         raise NotImplementedError
 
     @abstractmethod
-    async def search(self, *args, **kwargs) -> Any:
+    def search(self, *args, **kwargs) -> Any:
         raise NotImplementedError
 
     @abstractmethod
-    async def delete(self, *args, **kwargs):
+    def delete(self, *args, **kwargs):
         raise NotImplementedError
 
     @abstractmethod
-    async def update(self, *args, **kwargs):
+    def update(self, *args, **kwargs):
         pass

@@ -10,35 +10,35 @@ from src.property_finder.repositories.django.abstract_repository import ICRUDDja
 
 class AgentDjangoRepository(ICRUDDjangoRepository):
 
-    async def all(self) -> QuerySet[Agent]:
-        queryset = await Agent.objects.prefetch_related("agent").all()
+    def all(self) -> QuerySet[Agent]:
+        queryset = Agent.objects.prefetch_related("agent").all()
         return queryset
 
-    async def filter_by_fields(self, data: Dict[str:Any]) -> QuerySet[Agent]:
-        queryset = await self.all()
+    def filter_by_fields(self, data: Dict[str:Any]) -> QuerySet[Agent]:
+        queryset = self.all()
         if not data:
             return queryset
         return queryset  # TODO implement filters
 
-    async def find_by_id(self, pk: int) -> Agent:
-        instance = await Agent.objects.filter(pk=pk).afirst()
+    def find_by_id(self, pk: int) -> Agent:
+        instance = Agent.objects.filter(pk=pk).first()
         if not instance:
             raise AgentNotFound()
         return instance
 
-    async def create(self, name: str, email: str, phone_number: str) -> Agent:
+    def create(self, name: str, email: str, phone_number: str) -> Agent:
         with transaction.atomic():
-            instance = await Agent.objects.acreate(name=name, email=email, phone_number=phone_number)
+            instance = Agent.objects.create(name=name, email=email, phone_number=phone_number)
             return instance
 
-    async def delete(self, pk: int):
+    def delete(self, pk: int):
         with transaction.atomic():
-            await Agent.objects.filter(pk=pk).adelete()
+            Agent.objects.filter(pk=pk).delete()
 
-    async def update(self, pk: int, data: Dict[str, Any]) -> Agent:
+    def update(self, pk: int, data: Dict[str, Any]) -> Agent:
         with transaction.atomic():
-            instance = await self.find_by_id(pk=pk)
-            instance, is_updated = await self.instance_update(instance=instance,
-                                                              data=data,
-                                                              fields=list(data.keys()))
+            instance = self.find_by_id(pk=pk)
+            instance, is_updated = self.instance_update(instance=instance,
+                                                        data=data,
+                                                        fields=list(data.keys()))
             return instance

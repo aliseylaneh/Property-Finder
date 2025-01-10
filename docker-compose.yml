@@ -3,7 +3,7 @@ version: "3.9"
 services:
   db:
     image: postgres:latest
-    container_name: django
+    container_name: postgres
     ports:
       - 5432:5432
     environment:
@@ -11,7 +11,7 @@ services:
       - POSTGRES_USER=skyloov
       - POSTGRES_PASSWORD=skyloov1234
     volumes:
-      - django-data:/var/lib/postgresql/data
+      - postgres-data:/var/lib/postgresql/data
 
   elasticsearch:
     restart: always

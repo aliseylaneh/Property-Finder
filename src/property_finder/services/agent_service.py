@@ -8,12 +8,12 @@ class AgentService:
         self._django_repository = AgentDjangoRepository()
         self._elastic_repository = AgentElasticSearchRepository()
 
-    async def create_agent(self, name: str, email: str, phone_number: str) -> Agent:
+    def create_agent(self, name: str, email: str, phone_number: str) -> Agent:
         # Save to PostgresSQL
-        instance = await self._django_repository.create(name=name, email=email, phone_number=phone_number)
+        instance = self._django_repository.create(name=name, email=email, phone_number=phone_number)
 
         # Index in Elasticsearch
-        await self._elastic_repository.index(
+        self._elastic_repository.index(
             pk=instance.id,
             name=instance.name,
             email=instance.email,

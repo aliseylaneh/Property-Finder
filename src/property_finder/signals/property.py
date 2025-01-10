@@ -6,8 +6,8 @@ from src.property_finder.repositories.es.property_repo import PropertyElasticSea
 
 
 @receiver(post_save, sender=Agent)
-async def sync_property_to_elasticsearch(sender, instance, repository=PropertyElasticSearchRepository(), **kwargs):
-    await repository.index(
+def sync_property_to_elasticsearch(sender, instance, repository=PropertyElasticSearchRepository(), **kwargs):
+    repository.index(
         pk=instance.id,
         main_type_name=instance.main_type.title,
         sub_type_name=instance.sub_type.title,

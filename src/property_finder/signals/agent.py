@@ -6,14 +6,14 @@ from src.property_finder.repositories.es.agent_repo import AgentElasticSearchRep
 
 
 @receiver(post_save, sender=Agent)
-async def sync_agent_to_elasticsearch(sender,
-                                      instance,
-                                      created,
-                                      repository: AgentElasticSearchRepository = AgentElasticSearchRepository(),
-                                      **kwargs):
+def sync_agent_to_elasticsearch(sender,
+                                instance,
+                                created,
+                                repository: AgentElasticSearchRepository = AgentElasticSearchRepository(),
+                                **kwargs):
     if created:
         # Index new agent in Elasticsearch
-        await repository.index(
+        repository.index(
             pk=instance.id,
             name=instance.name,
             email=instance.email,
@@ -21,7 +21,7 @@ async def sync_agent_to_elasticsearch(sender,
         )
     else:
         # Update existing agent in Elasticsearch
-        await repository.index(
+        repository.index(
             pk=instance.id,
             name=instance.name,
             email=instance.email,
@@ -30,8 +30,8 @@ async def sync_agent_to_elasticsearch(sender,
 
 
 @receiver(post_delete, sender=Agent)
-async def delete_agent_from_elasticsearch(sender,
-                                          instance: Agent,
-                                          repository: AgentElasticSearchRepository = AgentElasticSearchRepository(),
-                                          **kwargs):
-    await repository.delete(pk=str(instance.id))
+def delete_agent_from_elasticsearch(sender,
+                                    instance: Agent,
+                                    repository: AgentElasticSearchRepository = AgentElasticSearchRepository(),
+                                    **kwargs):
+    repository.delete(pk=str(instance.id))
