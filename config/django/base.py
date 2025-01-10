@@ -158,4 +158,4 @@ from config.settings.cors import *  # noqa
 from config.settings.celery import *  # noqa
 from config.settings.swagger import *  # noqa
 from config.settings.kafka import *  # noqa
-from config.asgi import *  # noqa
+from adapter.asgi import *  # noqa
