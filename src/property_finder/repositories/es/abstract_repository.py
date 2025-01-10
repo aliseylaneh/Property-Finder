@@ -12,3 +12,11 @@ class IElasticSearchRepository(AbstractRepository):
     @abstractmethod
     async def search(self, *args, **kwargs) -> Any:
         raise NotImplementedError
+
+    @abstractmethod
+    async def delete(self, *args, **kwargs):
+        raise NotImplementedError
+
+    @abstractmethod
+    async def update(self, *args, **kwargs):
+        pass
