@@ -14,6 +14,13 @@ class AgentDjangoRepository:
         queryset = Agent.objects.prefetch_related("agent").all()
         return queryset
 
+    def check_agent_exists(self, pk: int | None):
+        if pk:
+            instance = Agent.objects.filter(pk=pk).first()
+            if not instance:
+                raise AgentNotFound()
+            return instance
+
     def find_by_id(self, pk: int) -> Agent:
         instance = Agent.objects.filter(pk=pk).first()
         if not instance:

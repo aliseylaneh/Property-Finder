@@ -15,13 +15,14 @@ class PropertyTypeRepository:
             raise PropertyTypeNotFound()
         return instance
 
-    def check_main_sub_exists(self, main_type: id, sub_type: id):
+    def check_main_sub_exists(self, main_type: int | None, sub_type: int | None):
         """
         This function will two Property types as maintype and subtype and checkout out if they exist.
         """
         existing_ids = PropertyType.objects.filter(id__in=[main_type, sub_type]).values_list('id', flat=True)
-        print(existing_ids)
-        if main_type not in existing_ids:
-            raise MainTypeNotFound()
-        if sub_type not in existing_ids:
-            raise SubTypeNotFound()
+        if main_type:
+            if main_type not in existing_ids:
+                raise MainTypeNotFound()
+        if sub_type:
+            if sub_type not in existing_ids:
+                raise SubTypeNotFound()

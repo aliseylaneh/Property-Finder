@@ -1,5 +1,7 @@
 from rest_framework import serializers
 
+from property_finder.apis.v1.serializers.agent import AgentOutputSerializer
+from property_finder.apis.v1.serializers.property_type import PropertyTypeBriefOutputSerializer
 from src.property_finder.models import Property
 
 
@@ -12,14 +14,18 @@ class CreatePropertyInputSerializer(serializers.Serializer):
 
 
 class UpdatePropertyInputSerializer(serializers.Serializer):
-    main_type = serializers.IntegerField(required=True, allow_null=False, min_value=1)
-    sub_type = serializers.IntegerField(required=True, allow_null=False, min_value=1)
+    main_type_id = serializers.IntegerField(required=True, allow_null=False, min_value=1)
+    sub_type_id = serializers.IntegerField(required=True, allow_null=False, min_value=1)
     title = serializers.CharField(required=True, allow_null=False, allow_blank=False)
     description = serializers.CharField(required=True, allow_null=False, allow_blank=True)
-    agent = serializers.IntegerField(required=True, allow_null=False, min_value=1)
+    agent_id = serializers.IntegerField(required=True, allow_null=False, min_value=1)
 
 
 class PropertyOutputSerializer(serializers.ModelSerializer):
+    main_type = PropertyTypeBriefOutputSerializer()
+    sub_type = PropertyTypeBriefOutputSerializer()
+    agent = AgentOutputSerializer()
+
     class Meta:
         model = Property
         fields = '__all__'
