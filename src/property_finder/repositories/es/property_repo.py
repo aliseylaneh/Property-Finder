@@ -31,7 +31,7 @@ class PropertyElasticSearchRepository(IElasticSearchRepository):
 
         return property_doc
 
-    def search(self, data: Dict[str, Any]) -> Dict[str, Any]:
+    def search(self, filters: Dict[str, Any]) -> Dict[str, Any]:
         """
         Search for properties based on provided filters.
         """

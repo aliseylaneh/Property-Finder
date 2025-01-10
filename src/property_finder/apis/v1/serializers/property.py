@@ -11,7 +11,7 @@ class CreatePropertyInputSerializer(serializers.Serializer):
     agent = serializers.IntegerField(required=True, allow_null=False, min_value=1)
 
 
-class CreatePropertyOutputSerializer(serializers.Serializer):
+class CreatePropertyOutputSerializer(serializers.ModelSerializer):
     class Meta:
         model = Property
         fields = '__all__'

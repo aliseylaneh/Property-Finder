@@ -14,11 +14,8 @@ class AgentDjangoRepository(ICRUDDjangoRepository):
         queryset = Agent.objects.prefetch_related("agent").all()
         return queryset
 
-    def filter_by_fields(self, data: Dict[str:Any]) -> QuerySet[Agent]:
-        queryset = self.all()
-        if not data:
-            return queryset
-        return queryset  # TODO implement filters
+    def filter_by_fields(self, data: Dict[str, Any]) -> QuerySet[Agent]:
+        pass
 
     def find_by_id(self, pk: int) -> Agent:
         instance = Agent.objects.filter(pk=pk).first()
@@ -35,10 +32,10 @@ class AgentDjangoRepository(ICRUDDjangoRepository):
         with transaction.atomic():
             Agent.objects.filter(pk=pk).delete()
 
-    def update(self, pk: int, data: Dict[str, Any]) -> Agent:
+    def update(self, pk: int, updates: Dict[str, Any]) -> Agent:
         with transaction.atomic():
             instance = self.find_by_id(pk=pk)
             instance, is_updated = self.instance_update(instance=instance,
-                                                        data=data,
-                                                        fields=list(data.keys()))
+                                                        data=updates,
+                                                        fields=list(updates.keys()))
             return instance

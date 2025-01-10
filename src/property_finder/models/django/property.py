@@ -11,10 +11,14 @@ class PropertyTypeDepth(models.IntegerChoices):
 class PropertyType(models.Model):
     title = models.CharField(max_length=50, null=False, blank=False)
     depth = models.IntegerField(choices=PropertyTypeDepth.choices, default=PropertyTypeDepth.TYPE)
-    parent = models.ForeignKey("self", null=True, blank=False, on_delete=models.CASCADE, related_name="sub_types")
+    parent = models.ForeignKey("self", null=True, blank=True, on_delete=models.CASCADE, related_name="sub_types")
 
     def __str__(self):
         return self.title
+
+    class Meta:
+        verbose_name = "Property type"
+        verbose_name_plural = "Property types"
 
 
 class Property(models.Model):
@@ -23,3 +27,7 @@ class Property(models.Model):
     title = models.CharField(max_length=50, null=False, blank=False)
     description = models.CharField(max_length=255, null=True, blank=True)
     agent = models.ForeignKey(Agent, null=True, blank=False, on_delete=models.SET_NULL)
+
+    class Meta:
+        verbose_name = "Property"
+        verbose_name_plural = "Properties"
