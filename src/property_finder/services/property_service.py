@@ -20,12 +20,15 @@ class PropertyService:
         )
         return property_instance
 
-    def search_property(self, data: Dict[str, Any]) -> Dict[str, Any]:
-        pass
+    def find_property(self, pk: int) -> Property:
+        return self._django_repository.find_by_id(pk=pk)
 
-    def update_property(self, pk: int, data: Dict[str, Any]) -> Property:
-        property_instance = self._django_repository.update(pk=pk, data=data)
+    def update_property(self, pk: int, updates: Dict[str, Any]) -> Property:
+        property_instance = self._django_repository.update(pk=pk, updates=updates)
         return property_instance
 
     def delete_property(self, pk: int):
         self._django_repository.delete(pk=pk)
+
+    def search_property(self, data: Dict[str, Any]) -> Dict[str, Any]:
+        pass

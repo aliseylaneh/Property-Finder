@@ -1,4 +1,5 @@
 from abc import ABC
+from typing import Any, Dict
 
 from src.property_finder.services.property_service import PropertyService
 from src.property_finder.usecases import IUseCase
@@ -16,3 +17,23 @@ class CreatePropertyUseCase(BasePropertyUseCase):
                                       title=title,
                                       description=description,
                                       agent=agent)
+
+
+class GetPropertyUseCase(BasePropertyUseCase):
+    def execute(self, pk: int):
+        return self._service.find_property(pk=pk)
+
+
+class UpdatePropertyUseCase(BasePropertyUseCase):
+    def execute(self, pk: int, updates: Dict[str, Any]):
+        return self._service.update_property(pk=pk, updates=updates)
+
+
+class DeletePropertyUseCase(BasePropertyUseCase):
+    def execute(self, pk: int):
+        self._service.delete_property(pk=pk)
+
+
+class SearchPropertyUseCase(BasePropertyUseCase):
+    def execute(self, filters: Dict[str, Any]):
+        return self._service.search_properties(filters=filters)

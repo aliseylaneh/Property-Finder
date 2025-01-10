@@ -11,6 +11,11 @@ class BaseAgentUseCase(IUseCase, ABC):
         self._service = AgentService()
 
 
+class GetAgentUseCase(BaseAgentUseCase):
+    def execute(self, pk: int):
+        return self._service.find_agent(pk=pk)
+
+
 class CreateAgentUseCase(BaseAgentUseCase):
     def execute(self, name: str, email: str, phone_number: str) -> Agent:
         return self._service.create_agent(name=name, email=email, phone_number=phone_number)

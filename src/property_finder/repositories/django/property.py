@@ -3,12 +3,17 @@ from typing import Any, Dict
 from django.db import transaction
 from django.db.models import QuerySet
 
+from property_finder.repositories.django.agent import AgentDjangoRepository
+from property_finder.repositories.django.property_type import PropertyTypeRepository
+from property_finder.repositories.django.services import instance_update as InstanceUpdateService
 from src.property_finder.models import Property
 from src.property_finder.models.exceptions.property import PropertyNotFound
-from src.property_finder.repositories.django.base import BaseRepository
 
 
-class PropertyDjangoRepository(BaseRepository):
+class PropertyDjangoRepository:
+    def __init__(self):
+        self._agent_repository = AgentDjangoRepository()
+        self._property_type_repository = PropertyTypeRepository()
 
     def all(self) -> QuerySet[Property]:
         queryset = Property.objects.prefetch_related("agent").all()
@@ -22,6 +27,8 @@ class PropertyDjangoRepository(BaseRepository):
 
     def create(self, main_type: int, sub_type: int, title: str, description: str, agent: int) -> Property:
         with transaction.atomic():
+            self._property_type_repository.check_main_sub_exists(main_type=main_type, sub_type=sub_type)
+            self._agent_repository.find_by_id(pk=agent)
             instance = Property.objects.create(main_type_id=main_type,
                                                sub_type_id=sub_type,
                                                title=title,
@@ -33,10 +40,10 @@ class PropertyDjangoRepository(BaseRepository):
         with transaction.atomic():
             Property.objects.filter(pk=pk).delete()
 
-    def update(self, pk: int, data: Dict[str, Any]) -> Property:
+    def update(self, pk: int, updates: Dict[str, Any]) -> Property:
         with transaction.atomic():
             instance = self.find_by_id(pk=pk)
-            instance, is_updated = self.instance_update(instance=instance,
-                                                        data=data,
-                                                        fields=list(data.keys()))
+            instance, is_updated = InstanceUpdateService(instance=instance,
+                                                         data=updates,
+                                                         fields=list(updates.keys()))
             return instance
