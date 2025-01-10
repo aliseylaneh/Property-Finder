@@ -1,7 +1,5 @@
 from typing import Any
 
-from elasticsearch_dsl import AsyncSearch
-
 from src.property_finder.models.es.property import PropertyDocument
 from src.property_finder.repositories.es.abstract_repository import IElasticSearchRepository
 
@@ -14,7 +12,7 @@ class PropertyElasticSearchRepository(IElasticSearchRepository):
                     sub_type_name: str,
                     title: str,
                     description: str,
-                    agent_name: int) -> PropertyDocument:
+                    agent_name: str) -> PropertyDocument:
         doc = await PropertyDocument(
             meta={'id': pk},
             main_type=main_type_name,
@@ -27,4 +25,4 @@ class PropertyElasticSearchRepository(IElasticSearchRepository):
         return doc
 
     async def search(self, main_type: str, sub_type: str, title: str) -> Any:
-        AsyncSearch().query("match", title="python")
+        PropertyDocument.search()

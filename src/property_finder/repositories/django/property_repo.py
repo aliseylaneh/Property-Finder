@@ -26,9 +26,13 @@ class PropertyDjangoRepository(ICRUDDjangoRepository):
             raise PropertyNotFound()
         return instance
 
-    async def create(self, name: str, email: str, phone_number: str) -> Property:
+    async def create(self, main_type: int, sub_type: int, title: str, description: str, agent: int) -> Property:
         with transaction.atomic():
-            instance = await Property.objects.acreate(name=name, email=email, phone_number=phone_number)
+            instance = await Property.objects.acreate(main_type=main_type,
+                                                      sub_type=sub_type,
+                                                      title=title,
+                                                      description=description,
+                                                      agent=agent)
             return instance
 
     async def delete(self, pk: int):

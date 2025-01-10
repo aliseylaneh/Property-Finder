@@ -1,7 +1,7 @@
-from elasticsearch_dsl import Document, Keyword, Text
+from elasticsearch_dsl import AsyncDocument, Keyword, Text
 
 
-class AgentDocument(Document):
+class AgentDocument(AsyncDocument):
     name = Text()
     email = Keyword()
     phone_number = Keyword()
