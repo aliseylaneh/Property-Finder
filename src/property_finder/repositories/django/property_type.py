@@ -19,7 +19,8 @@ class PropertyTypeRepository:
         """
         This function will two Property types as maintype and subtype and checkout out if they exist.
         """
-        existing_ids = PropertyType.objects.filter(id__in=[main_type, sub_type]).values_list('id')
+        existing_ids = PropertyType.objects.filter(id__in=[main_type, sub_type]).values_list('id', flat=True)
+        print(existing_ids)
         if main_type not in existing_ids:
             raise MainTypeNotFound()
         if sub_type not in existing_ids:

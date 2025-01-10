@@ -16,11 +16,11 @@ class PropertyDjangoRepository:
         self._property_type_repository = PropertyTypeRepository()
 
     def all(self) -> QuerySet[Property]:
-        queryset = Property.objects.prefetch_related("agent").all()
+        queryset = Property.objects.prefetch_related("agent", "main_type", "sub_type").all()
         return queryset
 
     def find_by_id(self, pk: int) -> Property:
-        instance = Property.objects.filter(pk=pk).first()
+        instance = Property.objects.select_related("agent", "main_type", "sub_type").filter(pk=pk).first()
         if not instance:
             raise PropertyNotFound()
         return instance
@@ -42,6 +42,8 @@ class PropertyDjangoRepository:
 
     def update(self, pk: int, updates: Dict[str, Any]) -> Property:
         with transaction.atomic():
+            self._property_type_repository.check_main_sub_exists(main_type=updates['agent'], sub_type=updates['sub_type'])
+            self._agent_repository.find_by_id(pk=updates['agent'])
             instance = self.find_by_id(pk=pk)
             instance, is_updated = InstanceUpdateService(instance=instance,
                                                          data=updates,

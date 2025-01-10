@@ -12,11 +12,11 @@ class BasePropertyUseCase(IUseCase, ABC):
 
 class CreatePropertyUseCase(BasePropertyUseCase):
     def execute(self, main_type: int, sub_type: int, title: str, description: str, agent: int):
-        self._service.create_property(main_type=main_type,
-                                      sub_type=sub_type,
-                                      title=title,
-                                      description=description,
-                                      agent=agent)
+        return self._service.create_property(main_type=main_type,
+                                             sub_type=sub_type,
+                                             title=title,
+                                             description=description,
+                                             agent=agent)
 
 
 class GetPropertyUseCase(BasePropertyUseCase):

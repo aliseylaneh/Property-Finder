@@ -4,13 +4,13 @@ from src.property_finder.models.models.agent import Agent
 
 
 class PropertyTypeDepth(models.IntegerChoices):
-    TYPE = 1
+    MAIN_TYPE = 1
     SUB_TYPE = 2
 
 
 class PropertyType(models.Model):
     title = models.CharField(max_length=50, null=False, blank=False)
-    depth = models.IntegerField(choices=PropertyTypeDepth.choices, default=PropertyTypeDepth.TYPE)
+    depth = models.IntegerField(choices=PropertyTypeDepth.choices, default=PropertyTypeDepth.MAIN_TYPE)
     parent = models.ForeignKey("self", null=True, blank=True, on_delete=models.CASCADE, related_name="sub_types")
 
     def __str__(self):
