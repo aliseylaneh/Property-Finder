@@ -28,7 +28,7 @@ class PropertyService:
                                        sub_type_name=property_instance.sub_type.title,
                                        title=title,
                                        description=description,
-                                       agent_name=agent.name)
+                                       agent_name=property_instance.agent.name)
         return property_instance
 
     def find_property(self, pk: int) -> Property:
@@ -43,5 +43,4 @@ class PropertyService:
 
     def search_property(self, query: str, **kwargs) -> Dict[str, Any]:
         query = self._elastic_repository.search(query=query, **kwargs)
-        print(query)
         return query

@@ -22,7 +22,7 @@ class UpdatePropertyInputSerializer(serializers.Serializer):
 
 
 class SearchPropertyInputSerializer(serializers.Serializer):
-    query = serializers.CharField(required=True, allow_null=False, allow_blank=False)
+    query = serializers.CharField(required=True, allow_null=False, allow_blank=True)
     size = serializers.IntegerField(required=False, allow_null=False, min_value=1)
     page = serializers.IntegerField(required=False, allow_null=False, min_value=1)
 

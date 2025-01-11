@@ -3,7 +3,7 @@ from typing import Any, Dict
 from elasticsearch import NotFoundError
 from elasticsearch_dsl import Q
 
-from property_finder.models.documents.property import PropertyDocument
+from property_finder.models.es_documents.property import PropertyDocument
 from property_finder.models.exceptions.property import PropertyNotFound
 
 
