@@ -37,7 +37,8 @@ class PropertyElasticSearchRepository:
         Perform a search query on the Property document.
         :param query: The query to search for
         :**kwargs: Arbitrary keyword arguments which should include size and page for pagination
-        :return: Dict[str, Any]: Search results"""
+        :return: Dict[str, Any]: Search results
+        """
         search = PropertyDocument.search().query(
             "function_score",
             query=Q("bool", should=[
@@ -46,21 +47,20 @@ class PropertyElasticSearchRepository:
                 Q("match", main_type__title={"query": query, "boost": 2}),
             ]),
             functions=[
-                {
-                    "script_score": {
-                        "script": {
-                            "source": """
+                {"script_score": {
+                    "script": {
+                        "source": """
                                         double score = 0;
                                         if (doc['title.keyword'].size() != 0 && doc['title.keyword'].value == params.query) score += 10;
                                         if (doc['sub_type.title.keyword'].size() != 0 && doc['sub_type.title.keyword'].value == params.query) score += 5;
                                         if (doc['main_type.title.keyword'].size() != 0 && doc['main_type.title.keyword'].value == params.query) score += 3;
                                         return score;
                                     """,
-                            "params": {
-                                "query": query
-                            }
+                        "params": {
+                            "query": query
                         }
                     }
+                }
                 }
             ],
             boost_mode="sum"
