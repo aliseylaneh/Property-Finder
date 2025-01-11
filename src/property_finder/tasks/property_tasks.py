@@ -21,8 +21,9 @@ def send_updates_event(event: Dict[str, Any]):
 
 def process_update_event():
     """
-    This scheduled async task will consume update events from KafkaTopics.POSTGRES_MODEL_UPDATE_TOPIC
-    and process them depending on their repository.
+    This scheduled async task will consume update events from KafkaTopics.POSTGRES_MODEL_UPDATE_TOPIC,
+    and process them depending on their repository. It's essential to give group_id for consumers
+    and producers to kafka it will be able to commit the process offsets.
     """
     with ProxyConsumerKafkaService(topic_name=KafkaTopics.POSTGRES_MODEL_UPDATE_TOPIC,
                                    group_id=KafkaGroupID.SCHEDULED_UPDATES) as consumer:
