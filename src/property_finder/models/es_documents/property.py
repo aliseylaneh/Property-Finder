@@ -7,25 +7,36 @@ from property_finder.models import Agent, Property, PropertyType
 @registry.register_document
 class PropertyDocument(Document):
     main_type = fields.ObjectField(properties={
-        'title': fields.TextField(fields={
-            'keyword': fields.KeywordField(),
-        })
+        'title': fields.TextField(
+            analyzer="property_analyzer",
+            fields={
+                'keyword': fields.KeywordField(),
+            }
+        )
     })
     sub_type = fields.ObjectField(properties={
-        'title': fields.TextField(fields={
-            'keyword': fields.KeywordField(),
-        })
+        'title': fields.TextField(
+            analyzer="property_analyzer",
+            fields={
+                'keyword': fields.KeywordField(),
+            }
+        )
     })
     agent = fields.ObjectField(properties={
-        'name': fields.TextField()
+        'name': fields.TextField(
+            analyzer="property_analyzer"
+        )
     })
-    title = fields.TextField(fields={
-        'keyword': fields.KeywordField(),
-    })
+    title = fields.TextField(
+        analyzer="property_analyzer",
+        fields={
+            'keyword': fields.KeywordField(),
+        }
+    )
 
     class Index:
         name = 'properties'
-        SETTINGS = {
+        settings = {
             "number_of_shards": 3,
             "number_of_replicas": 1,
             "analysis": {
@@ -40,7 +51,7 @@ class PropertyDocument(Document):
                     },
                     "property_stop_filter": {
                         "type": "stop",
-                        "stopwords": ["a", "an", "the", "for", "of", "and"]
+                        "stopwords": ["a", "an", "the", "for", "of", "and",]
                     }
                 },
                 "analyzer": {
