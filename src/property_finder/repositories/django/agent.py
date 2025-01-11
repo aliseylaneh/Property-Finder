@@ -5,7 +5,7 @@ from django.db.models import QuerySet
 
 from property_finder.repositories.django.services import instance_update as InstanceUpdateService
 from src.property_finder.models import Agent
-from src.property_finder.models.exceptions.agent import AgentNotFound
+from src.property_finder.models.exceptions.agent import AgentNotFound, InvalidPrimaryKey
 
 
 class AgentDjangoRepository:
@@ -28,12 +28,14 @@ class AgentDjangoRepository:
             if not instance:
                 raise AgentNotFound()
 
-    def find_by_id(self, pk: int) -> Agent:
+    def find_by_id(self, pk: int | None) -> Agent:
         """
         Retrieve an agent by its dedicated ID.
         :param pk: Agent ID which must be Integer.
         :return: The retrieved instance of Agent.
         """
+        if not pk:
+            raise InvalidPrimaryKey()
         instance = Agent.objects.filter(pk=pk).first()
         if not instance:
             raise AgentNotFound()

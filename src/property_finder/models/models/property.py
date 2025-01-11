@@ -16,6 +16,9 @@ class PropertyType(models.Model):
     def __str__(self):
         return self.title
 
+    def to_dict(self):
+        return {"id": self.id, "title": self.title}
+
     class Meta:
         verbose_name = "Property type"
         verbose_name_plural = "Property types"

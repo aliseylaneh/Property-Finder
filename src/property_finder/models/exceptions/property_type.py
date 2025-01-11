@@ -11,3 +11,8 @@ class MainTypeNotFound(Exception):
 class SubTypeNotFound(Exception):
     def __init__(self):
         super(SubTypeNotFound, self).__init__("Sub type doesn't exists.")
+
+
+class PropertyTypeErrorAssignment(Exception):
+    def __init__(self):
+        super(PropertyTypeErrorAssignment, self).__init__("You can't assign the same ID for main type and sub type together.")

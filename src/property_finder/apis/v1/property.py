@@ -3,9 +3,9 @@ from drf_spectacular.utils import extend_schema
 from rest_framework.response import Response
 from rest_framework.views import APIView
 
-from property_finder.usecases.propetry import GetPropertyUseCase
-from src.property_finder.apis.v1.serializers.property import CreatePropertyInputSerializer, PropertyOutputSerializer, \
+from property_finder.apis.v1.serializers.drf.property import CreatePropertyInputSerializer, PropertyOutputSerializer, \
     SearchPropertyInputSerializer, SearchPropertyOutputSerializer, UpdatePropertyInputSerializer
+from property_finder.usecases.propetry import GetPropertyUseCase
 from src.property_finder.usecases.propetry import CreatePropertyUseCase, DeletePropertyUseCase, SearchPropertyUseCase, \
     UpdatePropertyUseCase
 
@@ -37,9 +37,8 @@ class UpdatePropertyApi(APIView):
         try:
             serializer = UpdatePropertyInputSerializer(data=request.data)
             serializer.is_valid(raise_exception=True)
-            instance = self.usecase.execute(pk=property_id, updates=serializer.validated_data)
-            response = PropertyOutputSerializer(instance=instance, context={'request': request}).data
-            return Response(response)
+            result = self.usecase.execute(pk=property_id, updates=serializer.validated_data)
+            return Response(result)
         except Exception as exception:
             return ErrorResponse(exception=exception)
 

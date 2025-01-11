@@ -2,7 +2,7 @@ from typing import Any
 
 from elasticsearch import NotFoundError
 
-from src.property_finder.models.es_documents.agent import AgentDocument
+from property_finder.es.documents.agent import AgentDocument
 from src.property_finder.models.exceptions.agent import AgentNotFound
 from src.property_finder.repositories import AbstractRepository
 

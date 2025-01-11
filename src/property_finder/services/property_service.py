@@ -1,5 +1,7 @@
 from typing import Any, Dict, List
 
+from property_finder.repositories.django.agent import AgentDjangoRepository
+from property_finder.repositories.django.property_type import PropertyTypeRepository
 from src.property_finder.models import Property
 from src.property_finder.repositories.django.property import PropertyDjangoRepository
 from src.property_finder.repositories.es.es_property import PropertyElasticSearchRepository
@@ -12,35 +14,52 @@ class PropertyService:
         This service is actually the level of implementing logics between presentation layer and between domain layer.
         It's bind with two dependency one is PropertyDjangoRepository and one is PropertyElasticSearchRepository.
         """
-        self._django_repository = PropertyDjangoRepository()
-        self._elastic_repository = PropertyElasticSearchRepository()
+        self._django_property_repository = PropertyDjangoRepository()
+        self._elastic_property_repository = PropertyElasticSearchRepository()
+        self._django_agent_repository = AgentDjangoRepository()
+        self._property_type_repository = PropertyTypeRepository()
 
     def create_property(self, main_type, sub_type, title, description, agent) -> Property:
-        property_instance = self._django_repository.create(
+        property_instance = self._django_property_repository.create(
             main_type=main_type,
             sub_type=sub_type,
             title=title,
             description=description,
             agent=agent,
         )
-        self._elastic_repository.index(pk=property_instance.pk,
-                                       main_type_name=property_instance.main_type.title,
-                                       sub_type_name=property_instance.sub_type.title,
-                                       title=title,
-                                       description=description,
-                                       agent_name=property_instance.agent.name)
+        self._elastic_property_repository.index(
+            pk=property_instance.pk,
+            main_type={"id": property_instance.main_type.id, "title": property_instance.main_type.title},
+            sub_type={"id": property_instance.sub_type.id, "title": property_instance.sub_type.title},
+            title=title,
+            description=description,
+            agent={"id": property_instance.agent.id, "name": property_instance.agent.name}
+        )
         return property_instance
 
     def find_property(self, pk: int) -> Property:
-        return self._django_repository.find_by_id(pk=pk)
+        return self._django_property_repository.find_by_id(pk=pk)
 
-    def update_property(self, pk: int, updates: Dict[str, Any]) -> Property:
-        property_instance = self._django_repository.update(pk=pk, updates=updates)
-        return property_instance
+    def update_property(self, pk: int, updates: Dict[str, Any]) -> Dict[str, Any]:
+        """
+        Updates are done by elasticsearch repository, because where ever we update an item we expect the user
+        to see the updated information when they are searching through properties, then we publish an event on
+        Kafka in order to update the data on PostgresSQL later on as source of truth.
+        """
+        main_type, sub_type = self._property_type_repository.get_required_types(main_type=updates.get('main_type', None),
+                                                                                sub_type=updates.get('sub_type', None))
+        agent = self._django_agent_repository.find_by_id(pk=updates.get('agent', None))
+        updates['main_type'] = main_type.to_dict()
+        updates['sub_type'] = sub_type.to_dict()
+        updates['agent'] = agent.to_dict()
+        property_instance = self._elastic_property_repository.update(pk=pk, updates=updates)
+        # TODO Publish as event to update on PostgresSQL
+        return property_instance.to_dict()
 
     def delete_property(self, pk: int):
-        self._django_repository.delete(pk=pk)
+        self._elastic_property_repository.delete(pk=pk)
+        # TODO call celery task and publish event to kafka to delete from PostgresSQL
 
     def search_property(self, query: str, **kwargs) -> List[Dict[str, Any]]:
-        query = self._elastic_repository.search(query=query, **kwargs)
+        query = self._elastic_property_repository.search(query=query, **kwargs)
         return query

@@ -3,31 +3,30 @@ from typing import Any, Dict, List
 from elasticsearch import NotFoundError
 from elasticsearch_dsl import Q
 
-from property_finder.models.es_documents.property import PropertyDocument
+from property_finder.es.documents.property import PropertyDocument
 from property_finder.models.exceptions.property import PropertyNotFound
 
 
 class PropertyElasticSearchRepository:
 
-    def index(self, pk: int, main_type_name: str, sub_type_name: str, title: str, description: str,
-              agent_name: str) -> PropertyDocument:
+    def index(self, pk: int, main_type: Dict[str, Any], sub_type: Dict[str, Any], title: str, description: str, agent: Dict[str, Any]) -> PropertyDocument:
         """
         Index a new property document in Elasticsearch.
         :param pk: Property Document ID
-        :param main_type_name: Main Type Name
-        :param sub_type_name: Sub Type Name
+        :param main_type: Main Type
+        :param sub_type: Sub Type
         :param title: Title
         :param description: Description
-        :param agent_name: Agent Name
+        :param agent: Agent Name
         :return: Property Document
         """
         property_document = PropertyDocument(
             meta={'id': pk},
             title=title,
             description=description,
-            main_type={'title': main_type_name},
-            sub_type={'title': sub_type_name},
-            agent={'name': agent_name}
+            main_type=main_type,
+            sub_type=sub_type,
+            agent=agent
         )
         property_document.save()
         return property_document
@@ -81,13 +80,24 @@ class PropertyElasticSearchRepository:
         except NotFoundError:
             raise PropertyNotFound()
 
-    def update(self, pk: str, updates: Dict[str, Any]) -> PropertyDocument:
+    def find_by_id(self, pk: int) -> PropertyDocument:
+        """
+        Find a property document by its ID.
+        :param pk: Primary key of the property
+        """
+        try:
+            property_document = PropertyDocument.get(id=str(pk))
+            return property_document
+        except NotFoundError:
+            raise PropertyNotFound()
+
+    def update(self, pk: int, updates: Dict[str, Any]) -> PropertyDocument:
         """
         Update an existing property document in Elasticsearch.
         :param pk: Primary key of the property
         :param updates: Dictionary of properties to update
         """
-        property_document = PropertyDocument.get(id=pk)
+        property_document = self.find_by_id(pk=pk)
         for field, value in updates.items():
             setattr(property_document, field, value)
         property_document.save()

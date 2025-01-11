@@ -6,6 +6,11 @@ class AgentNotFound(Exception):
         super(AgentNotFound, self).__init__("Agent doesn't exists.")
 
 
+class InvalidPrimaryKey(Exception):
+    def __init__(self):
+        super(InvalidPrimaryKey, self).__init__("Provide a valid primary key.")
+
+
 class InvalidEmailAddress(ValidationError):
     def __init__(self):
         super(InvalidEmailAddress, self).__init__("Invalid email address")

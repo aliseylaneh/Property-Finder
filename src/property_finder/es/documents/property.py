@@ -1,12 +1,14 @@
 from django_elasticsearch_dsl import Document, fields
 from django_elasticsearch_dsl.registries import registry
 
+from config.settings.elasticsearch import property_settings
 from property_finder.models import Agent, Property, PropertyType
 
 
 @registry.register_document
 class PropertyDocument(Document):
     main_type = fields.ObjectField(properties={
+        'id': fields.IntegerField(),
         'title': fields.TextField(
             analyzer="property_analyzer",
             fields={
@@ -15,6 +17,7 @@ class PropertyDocument(Document):
         )
     })
     sub_type = fields.ObjectField(properties={
+        'id': fields.IntegerField(),
         'title': fields.TextField(
             analyzer="property_analyzer",
             fields={
@@ -23,6 +26,7 @@ class PropertyDocument(Document):
         )
     })
     agent = fields.ObjectField(properties={
+        'id': fields.IntegerField(),
         'name': fields.TextField(
             analyzer="property_analyzer"
         )
@@ -36,33 +40,7 @@ class PropertyDocument(Document):
 
     class Index:
         name = 'properties'
-        settings = {
-            "number_of_shards": 3,
-            "number_of_replicas": 1,
-            "analysis": {
-                "filter": {
-                    "property_synonym_filter": {
-                        "type": "synonym",
-                        "synonyms": [
-                            "apartment, flat", "beds, bedrooms",
-                            "house, home", "wc, toilet,shower",
-                            "condo, condominium", "balcony, balconies"
-                        ]
-                    },
-                    "property_stop_filter": {
-                        "type": "stop",
-                        "stopwords": ["a", "an", "the", "for", "of", "and",]
-                    }
-                },
-                "analyzer": {
-                    "property_analyzer": {
-                        "type": "custom",
-                        "tokenizer": "standard",
-                        "filter": ["lowercase", "property_synonym_filter", "property_stop_filter"]
-                    }
-                }
-            }
-        }
+        settings = property_settings
 
     class Django:
         model = Property

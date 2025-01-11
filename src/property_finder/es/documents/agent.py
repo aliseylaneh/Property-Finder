@@ -11,4 +11,7 @@ class AgentDocument(Document):
 
     class Django:
         model = Agent
-        fields = ['name']
+        fields = [
+            'id',
+            'name',
+        ]

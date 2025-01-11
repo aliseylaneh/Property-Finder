@@ -55,7 +55,7 @@ class PropertyDjangoRepository:
         :return: Property instance
         """
         with transaction.atomic():
-            self._property_type_repository.check_main_sub_exists(main_type=main_type, sub_type=sub_type)
+            self._property_type_repository.get_required_types(main_type=main_type, sub_type=sub_type)
             self._agent_repository.check_agent_exists(pk=agent)
             instance = Property.objects.create(main_type_id=main_type, sub_type_id=sub_type, title=title, description=description,agent_id=agent)
             return instance
@@ -80,7 +80,7 @@ class PropertyDjangoRepository:
         """
         with transaction.atomic():
             instance = self.find_by_id(pk=pk)
-            self._property_type_repository.check_main_sub_exists(main_type=updates.get('main_type_id', None),sub_type=updates.get('sub_type_id', None))
+            self._property_type_repository.get_required_types(main_type=updates.get('main_type_id', None), sub_type=updates.get('sub_type_id', None))
             self._agent_repository.check_agent_exists(pk=updates.get('agent_id', None))
             instance, is_updated = InstanceUpdateService(instance=instance, data=updates, fields=list(updates.keys()))
             return instance
