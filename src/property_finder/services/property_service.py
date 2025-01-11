@@ -1,4 +1,4 @@
-from typing import Any, Dict
+from typing import Any, Dict, List
 
 from src.property_finder.models import Property
 from src.property_finder.repositories.django.property import PropertyDjangoRepository
@@ -41,6 +41,6 @@ class PropertyService:
     def delete_property(self, pk: int):
         self._django_repository.delete(pk=pk)
 
-    def search_property(self, query: str, **kwargs) -> Dict[str, Any]:
+    def search_property(self, query: str, **kwargs) -> List[Dict[str, Any]]:
         query = self._elastic_repository.search(query=query, **kwargs)
         return query

@@ -1,4 +1,4 @@
-from typing import Any, Dict
+from typing import Any, Dict, List
 
 from elasticsearch import NotFoundError
 from elasticsearch_dsl import Q
@@ -32,7 +32,7 @@ class PropertyElasticSearchRepository:
         property_document.save()
         return property_document
 
-    def search(self, query: str, **kwargs) -> Dict[str, Any]:
+    def search(self, query: str, **kwargs) -> List[Dict[str, Any]]:
         """
         Perform a search query on the Property document.
         :param query: The query to search for
@@ -50,12 +50,12 @@ class PropertyElasticSearchRepository:
                     "script_score": {
                         "script": {
                             "source": """
-                                double score = 0;
-                                if (doc['title.keyword'].value == params.query) score += 10;
-                                if (doc['sub_type.title.keyword'].value == params.query) score += 5;
-                                if (doc['main_type.title.keyword'].value == params.query) score += 3;
-                                return score;
-                            """,
+                                        double score = 0;
+                                        if (doc['title.keyword'].size() != 0 && doc['title.keyword'].value == params.query) score += 10;
+                                        if (doc['sub_type.title.keyword'].size() != 0 && doc['sub_type.title.keyword'].value == params.query) score += 5;
+                                        if (doc['main_type.title.keyword'].size() != 0 && doc['main_type.title.keyword'].value == params.query) score += 3;
+                                        return score;
+                                    """,
                             "params": {
                                 "query": query
                             }
@@ -67,10 +67,8 @@ class PropertyElasticSearchRepository:
         ).extra(size=kwargs.get('size', 10), from_=(kwargs.get('page', 1) - 1) * kwargs.get('size', 10))
 
         results = search.execute()
-        return {
-            "total": results.hits.total.value,
-            "hits": [{"id": hit.meta.id, "score": hit.meta.score, "title": hit.title} for hit in results]
-        }
+        query_results = [{"id": hit.meta.id, "score": hit.meta.score, "title": hit.title} for hit in results]
+        return query_results
 
     def delete(self, pk: int) -> None:
         """

@@ -7,33 +7,40 @@ from property_finder.models import Agent, Property, PropertyType
 @registry.register_document
 class PropertyDocument(Document):
     main_type = fields.ObjectField(properties={
-        'title': fields.TextField()
+        'title': fields.TextField(fields={
+            'keyword': fields.KeywordField(),
+        })
     })
     sub_type = fields.ObjectField(properties={
-        'title': fields.TextField()
+        'title': fields.TextField(fields={
+            'keyword': fields.KeywordField(),
+        })
     })
     agent = fields.ObjectField(properties={
         'name': fields.TextField()
+    })
+    title = fields.TextField(fields={
+        'keyword': fields.KeywordField(),
     })
 
     class Index:
         name = 'properties'
         SETTINGS = {
-            "number_of_shards": 3,  # Adjust based on the number of documents and hardware
-            "number_of_replicas": 1,  # To ensure high availability
+            "number_of_shards": 3,
+            "number_of_replicas": 1,
             "analysis": {
                 "filter": {
                     "property_synonym_filter": {
                         "type": "synonym",
                         "synonyms": [
-                            "apartment, flat",
-                            "house, home",
-                            "condo, condominium"
+                            "apartment, flat", "beds, bedrooms",
+                            "house, home", "wc, toilet,shower",
+                            "condo, condominium", "balcony, balconies"
                         ]
                     },
                     "property_stop_filter": {
                         "type": "stop",
-                        "stopwords": ["a", "an", "the", "for", "of", "and"]  # Add more based on your language context
+                        "stopwords": ["a", "an", "the", "for", "of", "and"]
                     }
                 },
                 "analyzer": {
@@ -48,7 +55,7 @@ class PropertyDocument(Document):
 
     class Django:
         model = Property
-        fields = ['title', 'description']
+        fields = ['description']
         related_models = [PropertyType, Agent]
 
     def get_queryset(self):

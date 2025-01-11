@@ -86,8 +86,8 @@ class SearchPropertyApi(APIView):
             serializer.is_valid(raise_exception=True)
             result = self.usecase.execute(**serializer.validated_data)
 
-            response = SearchPropertyOutputSerializer(data=result['hits'], context={'request': request}, many=True)
-            response.is_valid(raise_exception=True)
-            return Response(response.data)
+            response_serializer = SearchPropertyOutputSerializer(data=result, context={'request': request}, many=True)
+            response_serializer.is_valid(raise_exception=True)
+            return Response(response_serializer.validated_data)
         except Exception as exception:
             return ErrorResponse(exception=exception)
