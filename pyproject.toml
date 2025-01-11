@@ -24,6 +24,7 @@ uvicorn = "^0.34.0"
 kafka-python = "^2.0.2"
 celery = { extras = ["redis"], version = "^5.4.0" }
 django-elasticsearch-dsl = "^8.0"
+django-redis-task-lock = "^0.7"
 
 
 [build-system]

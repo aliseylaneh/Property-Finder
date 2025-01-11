@@ -130,11 +130,10 @@ REST_FRAMEWORK = {
     'DEFAULT_AUTHENTICATION_CLASSES': []
 }
 
-# Redis
 CACHES = {
     'default': {
         'BACKEND': 'django_redis.cache.RedisCache',
-        'LOCATION': env("REDIS_LOCATION", default="redis://localhost:6379"),
+        'LOCATION': env("REDIS_LOCATION", default=f"redis://{env("REDIS_HOST")}:{env('REDIS_PORT')}/0"),
     }
 }
 # Cache time to live is 15 minutes.

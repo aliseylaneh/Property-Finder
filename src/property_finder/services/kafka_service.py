@@ -4,11 +4,9 @@ from adapter.kafka import get_kafka_consumer, get_kafka_producer
 
 
 class ProxyProducerKafkaService:
-    def __init__(self, group_id: str):
-        self.group_id = group_id
 
     def __enter__(self) -> KafkaProducer:
-        self.producer = get_kafka_producer(group_id=self.group_id)
+        self.producer = get_kafka_producer()
         return self.producer
 
     def __exit__(self, exc_type, exc_val, exc_tb):

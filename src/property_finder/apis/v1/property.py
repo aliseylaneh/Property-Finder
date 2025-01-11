@@ -5,9 +5,9 @@ from rest_framework.views import APIView
 
 from src.property_finder.apis.v1.serializers.property import CreatePropertyInputSerializer, PropertyOutputSerializer, \
     SearchPropertyInputSerializer, SearchPropertyOutputSerializer, UpdatePropertyInputSerializer
+from src.property_finder.usecases.propetry import GetPropertyUseCase
 from src.property_finder.usecases.propetry import CreatePropertyUseCase, DeletePropertyUseCase, SearchPropertyUseCase, \
     UpdatePropertyUseCase
-from src.property_finder.usecases.propetry import GetPropertyUseCase
 
 
 class CreatePropertyApi(APIView):
@@ -40,7 +40,7 @@ class UpdatePropertyApi(APIView):
             result = self.usecase.execute(pk=property_id, updates=serializer.validated_data)
             return Response(result)
         except Exception as exception:
-            raise exception
+            return ErrorResponse(exception=exception)
 
 
 class DeletePropertyApi(APIView):
