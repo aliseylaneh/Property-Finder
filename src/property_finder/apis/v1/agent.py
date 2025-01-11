@@ -4,7 +4,7 @@ from rest_framework.response import Response
 from rest_framework.views import APIView
 
 from property_finder.usecases.agent import GetAgentUseCase
-from property_finder.apis.v1.serializers.drf.agent import AgentOutputSerializer, CreateAgentInputSerializer, \
+from property_finder.apis.v1.serializers.agent import AgentOutputSerializer, CreateAgentInputSerializer, \
     SearchAgentInputSerializer, UpdateAgentInputSerializer
 from src.property_finder.usecases.agent import CreateAgentUseCase, DeleteAgentUseCase, SearchAgentUseCase, UpdateAgentUseCase
 

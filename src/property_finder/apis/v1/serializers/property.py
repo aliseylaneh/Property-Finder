@@ -1,7 +1,7 @@
 from rest_framework import serializers
 
-from property_finder.apis.v1.serializers.drf.agent import AgentOutputSerializer
-from property_finder.apis.v1.serializers.drf.property_type import PropertyTypeBriefOutputSerializer
+from property_finder.apis.v1.serializers.agent import AgentOutputSerializer
+from property_finder.apis.v1.serializers.property_type import PropertyTypeBriefOutputSerializer
 from src.property_finder.models import Property
 
 
