@@ -65,9 +65,9 @@ class PropertyElasticSearchRepository:
             ],
             boost_mode="sum"
         ).extra(size=kwargs.get('size', 10), from_=(kwargs.get('page', 1) - 1) * kwargs.get('size', 10))
-
         results = search.execute()
-        query_results = [{"id": hit.meta.id, "score": hit.meta.score, "title": hit.title} for hit in results]
+        query_results = [{"id": hit.meta.id, "score": hit.meta.score, "title": hit.title, "main_type": hit.main_type.title,
+                          "sub_type": hit.sub_type.title, "agent": hit.agent.name} for hit in results]
         return query_results
 
     def delete(self, pk: int) -> None:

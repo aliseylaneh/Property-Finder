@@ -31,6 +31,9 @@ class SearchPropertyOutputSerializer(serializers.Serializer):
     id = serializers.IntegerField(required=True, allow_null=False, min_value=1)
     score = serializers.FloatField(required=True, allow_null=False, min_value=0.0)
     title = serializers.CharField(required=True, allow_null=False, allow_blank=False)
+    main_type = serializers.CharField(required=True, allow_null=False, )
+    sub_type = serializers.CharField(required=True, allow_null=False, )
+    agent = serializers.CharField(required=True, allow_null=False, )
 
 
 class PropertyOutputSerializer(serializers.ModelSerializer):
