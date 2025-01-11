@@ -3,8 +3,8 @@ from typing import Any, Dict, List
 from elasticsearch import NotFoundError
 from elasticsearch_dsl import Q
 
-from property_finder.es.documents.property import PropertyDocument
-from property_finder.models.exceptions.property import PropertyNotFound
+from src.property_finder.es.documents.property import PropertyDocument
+from src.property_finder.models.exceptions.property import PropertyNotFound
 
 
 class PropertyElasticSearchRepository:

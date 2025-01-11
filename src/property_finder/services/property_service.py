@@ -1,10 +1,11 @@
 from typing import Any, Dict, List
 
-from property_finder.repositories.django.agent import AgentDjangoRepository
-from property_finder.repositories.django.property_type import PropertyTypeRepository
 from src.property_finder.models import Property
+from src.property_finder.repositories.django.agent import AgentDjangoRepository
 from src.property_finder.repositories.django.property import PropertyDjangoRepository
+from src.property_finder.repositories.django.property_type import PropertyTypeRepository
 from src.property_finder.repositories.es.es_property import PropertyElasticSearchRepository
+from src.property_finder.tasks.property_tasks import update_property_on_postgresql
 
 
 class PropertyService:
@@ -48,19 +49,19 @@ class PropertyService:
 
     def find_property(self, pk: int) -> Property:
         """
-        Retrieve a Property instance
+        Retrieve a Property instance from PostgreSQL.
         :param pk: Property id
         :return: Property instance
         """
         return self._django_property_repository.find_by_id(pk=pk)
 
-    def update_property(self, pk: int, updates: Dict[str, Any]) -> Dict[str, Any]:
+    def _prepare_update_dict(self, updates: Dict[str, Any]) -> Dict[str, Any]:
         """
-        Updates are done by elasticsearch repository, because where ever we update an item we expect the user
-        to see the updated information when they are searching through properties, then we publish an event on
-        Kafka in order to update the data on PostgresSQL later as source of truth.
-        :param pk: Property id
-        :param updates: A dictionary of values for dedicated fields of Property
+        This service is responsible to preparing dictionary for update operation in ElasticSearch.
+        Validates assigned the Main type, Sub type and Agent ID by calling the PostgresSQL for ensuring
+        data consistency.
+        :param updates: Dictionary of updates
+        :return: Dictionary of prepared updates ElasticSearch documents.
         """
         # Validating and retrieving Main and Sub type, due to the responsibility of PostgreSQL as source of truth.
         main_type, sub_type = self._property_type_repository.get_required_types(
@@ -75,10 +76,24 @@ class PropertyService:
         updates['main_type'] = main_type.to_dict()
         updates['sub_type'] = sub_type.to_dict()
         updates['agent'] = agent.to_dict()
+        return updates
+
+    def update_property(self, pk: int, updates: Dict[str, Any]) -> Dict[str, Any]:
+        """
+        Updates are done by elasticsearch repository, because where ever we update an item we expect the user
+        to see the updated information when they are searching through properties, then we publish an event on
+        Kafka in order to update the data on PostgresSQL later as source of truth. This will help us to have
+        Elasticsearch and PostgreSQL in a consistence way.
+        :param pk: Property id
+        :param updates: A dictionary of values for dedicated fields of Property
+        """
 
         # Updating the property instance in Elasticsearch.
-        property_instance = self._elastic_property_repository.update(pk=pk, updates=updates)
-        # TODO Publish as event to update on PostgresSQL
+        prepared_updates = self._prepare_update_dict(updates.copy())
+        property_instance = self._elastic_property_repository.update(pk=pk, updates=prepared_updates)
+
+        # Sending an Event on Kafka topic in order to PostgreSQL instance later on.
+        update_property_on_postgresql.delay(pk=pk, updates=updates)
         return property_instance.to_dict()
 
     def delete_property(self, pk: int):

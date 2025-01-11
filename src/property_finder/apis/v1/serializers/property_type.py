@@ -1,6 +1,6 @@
 from rest_framework import serializers
 
-from property_finder.models import PropertyType
+from src.property_finder.models import PropertyType
 
 
 class PropertyTypeOutputSerializer(serializers.ModelSerializer):

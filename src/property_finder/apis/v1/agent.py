@@ -3,8 +3,8 @@ from drf_spectacular.utils import extend_schema
 from rest_framework.response import Response
 from rest_framework.views import APIView
 
-from property_finder.usecases.agent import GetAgentUseCase
-from property_finder.apis.v1.serializers.agent import AgentOutputSerializer, CreateAgentInputSerializer, \
+from src.property_finder.usecases.agent import GetAgentUseCase
+from src.property_finder.apis.v1.serializers.agent import AgentOutputSerializer, CreateAgentInputSerializer, \
     SearchAgentInputSerializer, UpdateAgentInputSerializer
 from src.property_finder.usecases.agent import CreateAgentUseCase, DeleteAgentUseCase, SearchAgentUseCase, UpdateAgentUseCase
 

@@ -2,7 +2,7 @@ from typing import Tuple
 
 from django.db.models import QuerySet
 
-from property_finder.models.exceptions.property_type import MainTypeNotFound, PropertyTypeErrorAssignment, PropertyTypeNotFound, \
+from src.property_finder.models.exceptions.property_type import MainTypeNotFound, PropertyTypeErrorAssignment, PropertyTypeNotFound, \
     SubTypeNotFound
 from src.property_finder.models import PropertyType
 

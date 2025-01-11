@@ -2,7 +2,7 @@ from django_elasticsearch_dsl import Document, fields
 from django_elasticsearch_dsl.registries import registry
 
 from config.settings.elasticsearch import property_settings
-from property_finder.models import PropertyType
+from src.property_finder.models import PropertyType
 
 
 @registry.register_document
