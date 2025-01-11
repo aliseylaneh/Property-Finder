@@ -27,7 +27,7 @@ class PropertyDjangoRepository:
         This function returns all Properties in the database.
         :return: QuerySet of all Properties in the database.
         """
-        queryset = Property.objects.prefetch_related("agent", "main_type", "sub_type").all()
+        queryset = Property.objects.select_related("agent", "main_type", "sub_type").all()
         return queryset
 
     def find_by_id(self, pk: int) -> Property:

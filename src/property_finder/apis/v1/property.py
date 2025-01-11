@@ -5,7 +5,7 @@ from rest_framework.views import APIView
 
 from property_finder.usecases.propetry import GetPropertyUseCase
 from src.property_finder.apis.v1.serializers.property import CreatePropertyInputSerializer, PropertyOutputSerializer, \
-    UpdatePropertyInputSerializer
+    SearchPropertyInputSerializer, SearchPropertyOutputSerializer, UpdatePropertyInputSerializer
 from src.property_finder.usecases.propetry import CreatePropertyUseCase, DeletePropertyUseCase, SearchPropertyUseCase, \
     UpdatePropertyUseCase
 
@@ -78,11 +78,14 @@ class SearchPropertyApi(APIView):
         super(SearchPropertyApi, self).__init__(**kwargs)
         self.usecase = SearchPropertyUseCase()
 
-    @extend_schema(request=UpdatePropertyInputSerializer, responses=PropertyOutputSerializer, tags=['Property'])
+    @extend_schema(parameters=[SearchPropertyInputSerializer], responses=SearchPropertyOutputSerializer, tags=['Property'])
     def get(self, request):
         try:
-            instance = self.usecase.execute()
-            response = PropertyOutputSerializer(instance=instance, context={'request': request}).data
+
+            serializer = SearchPropertyInputSerializer(data=request.query_params.dict())
+            serializer.is_valid(raise_exception=True)
+            result = self.usecase.execute(**serializer.validated_data)
+            response = SearchPropertyOutputSerializer(data=result, context={'request': request}).data
             return Response(response)
         except Exception as exception:
             return ErrorResponse(exception=exception)

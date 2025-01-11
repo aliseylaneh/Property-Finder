@@ -10,13 +10,7 @@ from src.property_finder.repositories import AbstractRepository
 class AgentElasticSearchRepository(AbstractRepository):
 
     def index(self, pk: int, name: str, email: str, phone_number: str):
-        doc = AgentDocument(
-            meta={'id': pk},
-            name=name,
-            email=email,
-            phone_number=phone_number
-        )
-        doc.save()
+        pass
 
     def search(self, *args, **kwargs) -> Any:
         pass

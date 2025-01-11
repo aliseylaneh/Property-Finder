@@ -25,7 +25,8 @@ THIRD_PARTY_APPS = [
     'corsheaders',
     'drf_spectacular',
     'django_extensions',
-    'django_microservice_common'
+    'django_microservice_common',
+    'django_elasticsearch_dsl'
 ]
 
 INSTALLED_APPS = [
@@ -151,4 +152,5 @@ from config.settings.cors import *  # noqa
 from config.settings.celery import *  # noqa
 from config.settings.swagger import *  # noqa
 from config.settings.kafka import *  # noqa
+from config.settings.elasticsearch import *  # noqa
 from adapter.asgi import *  # noqa

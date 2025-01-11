@@ -1,10 +1,14 @@
-from elasticsearch_dsl import Document, Keyword, Text
+from django_elasticsearch_dsl import Document
+from django_elasticsearch_dsl.registries import registry
+
+from property_finder.models import Agent
 
 
+@registry.register_document
 class AgentDocument(Document):
-    name = Text()
-    email = Keyword()
-    phone_number = Keyword()
-
     class Index:
         name = 'agents'
+
+    class Django:
+        model = Agent
+        fields = ['name']

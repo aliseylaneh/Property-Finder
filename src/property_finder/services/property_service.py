@@ -7,6 +7,11 @@ from src.property_finder.repositories.es.es_property import PropertyElasticSearc
 
 class PropertyService:
     def __init__(self):
+        """
+        Property service provide all operations that are dedicated to Property domain model of our business.
+        This service is actually the level of implementing logics between presentation layer and between domain layer.
+        It's bind with two dependency one is PropertyDjangoRepository and one is PropertyElasticSearchRepository.
+        """
         self._django_repository = PropertyDjangoRepository()
         self._elastic_repository = PropertyElasticSearchRepository()
 
@@ -18,6 +23,12 @@ class PropertyService:
             description=description,
             agent=agent,
         )
+        self._elastic_repository.index(pk=property_instance.pk,
+                                       main_type_name=property_instance.main_type.title,
+                                       sub_type_name=property_instance.sub_type.title,
+                                       title=title,
+                                       description=description,
+                                       agent_name=agent.name)
         return property_instance
 
     def find_property(self, pk: int) -> Property:
@@ -30,5 +41,7 @@ class PropertyService:
     def delete_property(self, pk: int):
         self._django_repository.delete(pk=pk)
 
-    def search_property(self, data: Dict[str, Any]) -> Dict[str, Any]:
-        pass
+    def search_property(self, query: str, **kwargs) -> Dict[str, Any]:
+        query = self._elastic_repository.search(query=query, **kwargs)
+        print(query)
+        return query

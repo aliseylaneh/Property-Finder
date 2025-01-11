@@ -35,5 +35,5 @@ class DeletePropertyUseCase(BasePropertyUseCase):
 
 
 class SearchPropertyUseCase(BasePropertyUseCase):
-    def execute(self, filters: Dict[str, Any]):
-        return self._service.search_properties(filters=filters)
+    def execute(self, query: str, **kwargs) -> Dict[str, Any]:
+        return self._service.search_property(query=query, **kwargs)
