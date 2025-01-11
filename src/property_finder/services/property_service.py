@@ -1,11 +1,13 @@
+from time import sleep
 from typing import Any, Dict, List
 
+from property_finder.models.events.events import DomainEventTypes, UpdateEvent
 from src.property_finder.models import Property
 from src.property_finder.repositories.django.agent import AgentDjangoRepository
 from src.property_finder.repositories.django.property import PropertyDjangoRepository
 from src.property_finder.repositories.django.property_type import PropertyTypeRepository
 from src.property_finder.repositories.es.es_property import PropertyElasticSearchRepository
-from src.property_finder.tasks.property_tasks import update_property_on_postgresql
+from src.property_finder.tasks.property_tasks import process_update_event, send_updates_event
 
 
 class PropertyService:
@@ -93,7 +95,10 @@ class PropertyService:
         property_instance = self._elastic_property_repository.update(pk=pk, updates=prepared_updates)
 
         # Sending an Event on Kafka topic in order to PostgreSQL instance later on.
-        update_property_on_postgresql.delay(pk=pk, updates=updates)
+        event = UpdateEvent(pk=pk, updates=updates, repo_name=PropertyDjangoRepository.__name__,
+                            event_type=DomainEventTypes.PROPERTY_UPDATED).model_dump()
+        send_updates_event.delay(event=event)
+        process_update_event()
         return property_instance.to_dict()
 
     def delete_property(self, pk: int):

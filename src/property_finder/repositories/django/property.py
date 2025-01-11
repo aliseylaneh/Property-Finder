@@ -57,8 +57,7 @@ class PropertyDjangoRepository:
         with transaction.atomic():
             self._property_type_repository.get_required_types(main_type=main_type, sub_type=sub_type)
             self._agent_repository.check_agent_exists(pk=agent)
-            instance = Property.objects.create(main_type_id=main_type, sub_type_id=sub_type, title=title, description=description,
-                                               agent_id=agent)
+            instance = Property.objects.create(main_type_id=main_type, sub_type_id=sub_type, title=title, description=description, agent_id=agent)
             return instance
 
     def delete(self, pk: int):

@@ -1,14 +1,33 @@
 import logging
-from typing import Any, Dict
 
 from adapter.celery import celery
-from property_finder.repositories.django.property import PropertyDjangoRepository
+from adapter.kafka import KafkaTopics
+from property_finder.services.kafka_service import ProxyConsumerKafkaService, ProxyProducerKafkaService
+from src.property_finder.repositories.django import *  # noqa This is requried in order to have classes loaded in our globals()
 
 logger = logging.getLogger(__name__)
 
 
 @celery.task
-def update_property_on_postgresql(pk: int, updates: Dict[str, Any]):
-    logger.info(f"Task received with pk: {pk}, updates: {updates}")
-    repository = PropertyDjangoRepository()
-    repository.update(pk=pk, updates=updates)
+def send_updates_event(event: Dict[str, Any]):
+    """
+    This async task is responsible for sending updates of a Django model to its dedicated topic,
+    So it will be consumed later on and process depending on repository.
+    :param event: An event dictionary which is going to be produced on kafka
+    """
+    with ProxyProducerKafkaService() as producer:
+        producer.send(topic=KafkaTopics.POSTGRES_MODEL_UPDATE_TOPIC, key=None, value=event)
+
+
+def process_update_event():
+    """
+    This scheduled async task will consume update events from KafkaTopics.POSTGRES_MODEL_UPDATE_TOPIC
+    and process them depending on their repository.
+    """
+    with ProxyConsumerKafkaService(topic_name=KafkaTopics.POSTGRES_MODEL_UPDATE_TOPIC) as consumer:
+        message = next(consumer)
+        event = message.value
+        if event:
+            repository = globals()[event['repo_name']]
+            repository().update(pk=int(event['pk']), updates=event['updates'])
+        consumer.commit(offsets={message.partition: message.offset + 1})

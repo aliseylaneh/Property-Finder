@@ -1,13 +1,31 @@
+import json
+from enum import StrEnum
+
 from kafka import KafkaConsumer, KafkaProducer
 
 from config.django.base import KAFKA_BOOTSTRAP_SERVERS
 
 
+class KafkaTopics(StrEnum):
+    POSTGRES_MODEL_UPDATE_TOPIC = "PostgresModelUpdateTopic"
+    EMAIL_TOPIC = "EmailTopic"
+
+
 def get_kafka_producer():
-    producer = KafkaProducer(bootstrap_servers=KAFKA_BOOTSTRAP_SERVERS)
+    producer = KafkaProducer(
+        bootstrap_servers=KAFKA_BOOTSTRAP_SERVERS,
+        value_serializer=lambda v: json.dumps(v).encode('utf-8'),
+        key_serializer=lambda k: k.encode('utf-8') if k else None
+    )
     return producer
 
 
 def get_kafka_consumer(topic_name: str):
-    consumer = KafkaConsumer(topic_name, bootstrap_servers=KAFKA_BOOTSTRAP_SERVERS)
+    consumer = KafkaConsumer(
+        topic_name,
+        bootstrap_servers=KAFKA_BOOTSTRAP_SERVERS,
+        value_deserializer=lambda v: json.loads(v.decode('utf-8')),
+        key_deserializer=lambda k: k.decode('utf-8') if k else None,
+        auto_offset_reset='earliest',
+    )
     return consumer
