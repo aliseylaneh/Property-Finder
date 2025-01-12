@@ -22,9 +22,3 @@ CELERY_RESULT_SERIALIZER = 'json'
 CELERY_BROKER_CONNECTION_RETRY_ON_STARTUP = True
 
 celery.conf.timezone = "Asia/Tehran"
-# celery.conf.beat_schedule = {
-#     'process_update_events': {
-#         'task': 'src.property_finder.tasks.property_tasks.process_update_events',
-#         'schedule': 5
-#     },
-# }

@@ -7,7 +7,7 @@ from config.django.base import KAFKA_BOOTSTRAP_SERVERS
 
 
 class KafkaTopics(StrEnum):
-    POSTGRES_MODEL_UPDATE_TOPIC = "PostgresModelUpdateTopic"
+    POSTGRES_EVENT_LOGS_TOPIC = "PostgresEventLogsTopic"
     EMAIL_TOPIC = "EmailTopic"
 
 

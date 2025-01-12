@@ -1,12 +1,12 @@
 from typing import Any, Dict, List
 
-from property_finder.models.events.events import DomainEventTypes, UpdateEvent
+from property_finder.models.events.events import DomainEventTypes, UpdateEvent, DeleteEvent
 from src.property_finder.models import Property
 from src.property_finder.repositories.django.agent import AgentDjangoRepository
 from src.property_finder.repositories.django.property import PropertyDjangoRepository
 from src.property_finder.repositories.django.property_type import PropertyTypeRepository
 from src.property_finder.repositories.es.es_property import PropertyElasticSearchRepository
-from src.property_finder.tasks.tasks import send_updates_event
+from src.property_finder.tasks.tasks import async_update_event, async_delete_event
 
 
 class PropertyService:
@@ -82,9 +82,8 @@ class PropertyService:
     def update_property(self, pk: int, updates: Dict[str, Any]) -> Dict[str, Any]:
         """
         Updates are done by elasticsearch repository, because where ever we update an item we expect the user
-        to see the updated information when they are searching through properties, then we publish an event on
-        Kafka in order to update the data on PostgresSQL later as source of truth. This will help us to have
-        Elasticsearch and PostgreSQL in a consistence way.
+        to see the updated information when they are searching through properties, then we run Celery task to
+        in order to update the PostgreSQL as source of truth.
         :param pk: Property id
         :param updates: A dictionary of values for dedicated fields of Property
         """
@@ -93,10 +92,15 @@ class PropertyService:
         prepared_updates = self._prepare_update_dict(updates.copy())
         property_instance = self._elastic_property_repository.update(pk=pk, updates=prepared_updates)
 
-        # Sending an Event on Kafka topic in order to PostgreSQL instance later on.
-        event = UpdateEvent(pk=pk, updates=updates, repo_name=PropertyDjangoRepository.__name__,
-                            event_type=DomainEventTypes.PROPERTY_UPDATED).model_dump()
-        send_updates_event.delay(event=event)
+        # Updating property in asynchronous matter from PostgresSQL.
+        # Update event is also logged in Kafka topic.
+        event = UpdateEvent(
+            pk=pk,
+            updates=updates,
+            repo_name=PropertyDjangoRepository.__name__,
+            event_type=DomainEventTypes.PROPERTY_UPDATED
+        ).model_dump()
+        async_update_event.delay(event=event)
         return property_instance.to_dict()
 
     def delete_property(self, pk: int):
@@ -106,7 +110,15 @@ class PropertyService:
         :param pk: Property id.
         """
         self._elastic_property_repository.delete(pk=pk)
-        # TODO call celery task and publish event to kafka to delete from PostgresSQL
+
+        # Deleting property in asynchronous matter from PostgreSQL.
+        # Delete event is also logged in Kafka topic.
+        event = DeleteEvent(
+            pk=pk,
+            repo_name=PropertyDjangoRepository.__name__,
+            event_type=DomainEventTypes.PROPERTY_DELETED
+        ).model_dump()
+        async_delete_event(event=event)
 
     def search_property(self, query: str, **kwargs) -> List[Dict[str, Any]]:
         """
