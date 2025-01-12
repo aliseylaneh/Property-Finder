@@ -1,7 +1,7 @@
 from typing import Any, Dict, List
 
-from property_finder.models.events.events import DeleteEvent, DomainEventTypes, UpdateEvent
 from src.property_finder.models import Property
+from src.property_finder.models.events.events import DeleteEvent, DomainEventTypes, UpdateEvent
 from src.property_finder.repositories.django.agent import AgentDjangoRepository
 from src.property_finder.repositories.django.property import PropertyDjangoRepository
 from src.property_finder.repositories.django.property_type import PropertyTypeRepository
@@ -96,17 +96,19 @@ class PropertyService:
 
         # Updating the property instance in Elasticsearch.
         prepared_updates = self._prepare_update_dict(updates.copy())
-        property_instance = self._elastic_property_repository.update(pk=pk, updates=prepared_updates)
+        property_instance, has_updated = self._elastic_property_repository.update(pk=pk, updates=prepared_updates)
 
-        # Updating property in asynchronous matter from PostgresSQL.
-        # Update event is also logged in Kafka topic.
-        event = UpdateEvent(
-            pk=pk,
-            updates=updates,
-            repo_name=PropertyDjangoRepository.__name__,
-            event_type=DomainEventTypes.PROPERTY_UPDATED
-        ).model_dump()
-        async_update_event.delay(event=event)
+        # Update happens in PostgreSQL if and only the document fields has been updated.
+        if has_updated:
+            # Updating Property in asynchronous matter for PostgresSQL.
+            # Update event is also logged in Kafka topic.
+            event = UpdateEvent(
+                pk=pk,
+                updates=updates,
+                repo_name=PropertyDjangoRepository.__name__,
+                event_type=DomainEventTypes.PROPERTY_UPDATED
+            ).model_dump()
+            async_update_event.delay(event=event)
         return property_instance.to_dict()
 
     def delete_property(self, pk: int):

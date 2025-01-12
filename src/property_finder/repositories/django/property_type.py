@@ -2,9 +2,9 @@ from typing import Tuple
 
 from django.db.models import QuerySet
 
+from src.property_finder.models import PropertyType
 from src.property_finder.models.exceptions.property_type import MainTypeNotFound, PropertyTypeErrorAssignment, PropertyTypeNotFound, \
     SubTypeNotFound
-from src.property_finder.models import PropertyType
 
 
 class PropertyTypeRepository:
@@ -28,7 +28,7 @@ class PropertyTypeRepository:
         """
         if main_type == sub_type:
             raise PropertyTypeErrorAssignment()
-        query = PropertyType.objects.filter(id__in=[main_type, sub_type]).order_by('depth')
+        query = PropertyType.objects.filter(id__in=[main_type, sub_type])
         existing_ids = query.values_list('id', flat=True)
         if main_type:
             if main_type not in existing_ids:
@@ -36,4 +36,4 @@ class PropertyTypeRepository:
         if sub_type:
             if sub_type not in existing_ids:
                 raise SubTypeNotFound()
-        return query[0], query[1]
+        return query.get(pk=main_type), query.get(pk=sub_type)

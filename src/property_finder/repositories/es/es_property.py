@@ -1,8 +1,9 @@
-from typing import Any, Dict, List
+from typing import Any, Dict, List, Tuple
 
 from elasticsearch import NotFoundError
 from elasticsearch_dsl import Q
 
+from property_finder.repositories.es.services import document_update as DocumentUpdateService
 from src.property_finder.es.documents.property import PropertyDocument
 from src.property_finder.models.exceptions.property import PropertyNotFound
 
@@ -76,11 +77,8 @@ class PropertyElasticSearchRepository:
         Delete a property document from Elasticsearch by its ID.
         :param pk: Primary key of the property
         """
-        try:
-            property_document = PropertyDocument.get(id=str(pk))
-            property_document.delete()
-        except NotFoundError:
-            raise PropertyNotFound()
+        property_document = self.find_by_id(pk=pk)
+        property_document.delete()
 
     def find_by_id(self, pk: int) -> PropertyDocument:
         """
@@ -93,14 +91,13 @@ class PropertyElasticSearchRepository:
         except NotFoundError:
             raise PropertyNotFound()
 
-    def update(self, pk: int, updates: Dict[str, Any]) -> PropertyDocument:
+    def update(self, pk: int, updates: Dict[str, Any]) -> Tuple[PropertyDocument, bool]:
         """
         Update an existing property document in Elasticsearch.
         :param pk: Primary key of the property
         :param updates: Dictionary of properties to update
         """
         property_document = self.find_by_id(pk=pk)
-        for field, value in updates.items():
-            setattr(property_document, field, value)
-        property_document.save()
-        return property_document
+        fields = list(updates.keys())
+        property_document, has_updated = DocumentUpdateService(document=property_document, fields=fields, data=updates)
+        return property_document, has_updated

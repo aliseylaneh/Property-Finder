@@ -8,7 +8,7 @@ def instance_update(
         fields: List[str],
         data: Dict[str, Any]) -> Tuple[DjangoModelType, bool]:
     """
-    Generic update service meant to be reused in local update repositories
+    Generic update service meant to be reused in local update repositories for Django.
     For example:
     def user_update(*, user: User, data) -> User:
         fields = ['first_name', 'last_name']

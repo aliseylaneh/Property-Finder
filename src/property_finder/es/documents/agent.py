@@ -52,4 +52,6 @@ class AgentDocument(Document):
         model = Agent
         fields = [
             'id',
+            'email',
+            'phone_number',
         ]
