@@ -5,13 +5,25 @@ services:
     image: postgres:latest
     container_name: postgres
     ports:
-      - 5432:5432
+      - "5432:5432"
     environment:
       - POSTGRES_DB=property_finder
       - POSTGRES_USER=skyloov
       - POSTGRES_PASSWORD=skyloov1234
     volumes:
       - postgres-data:/var/lib/postgresql/data
+
+
+  pgbouncer:
+    image: edoburu/pgbouncer:latest
+    container_name: pgbouncer
+    ports:
+      - "6432:6432"
+    volumes:
+      - ./pgbouncer/pgbouncer.ini:/etc/pgbouncer/pgbouncer.ini
+      - ./pgbouncer/userlist.txt:/etc/pgbouncer/userlist.txt
+    depends_on:
+      - db
 
   elasticsearch:
     restart: always
@@ -32,7 +44,7 @@ services:
     image: redis:latest
     container_name: redis
     ports:
-      - 6379:6379
+      - "6379:6379"
     volumes:
       - redis-data:/data
 
