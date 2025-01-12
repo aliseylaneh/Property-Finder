@@ -69,7 +69,7 @@ class AgentService:
         """
         self._elastic_repository.delete(pk=pk)
 
-        # Deleting property in asynchronous matter from PostgreSQL.
+        # Deleting an Agent in asynchronous matter from PostgreSQL.
         # Delete event is also logged in Kafka topic.
         event = DeleteEvent(
             pk=pk,
