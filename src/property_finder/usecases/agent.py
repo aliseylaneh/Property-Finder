@@ -1,5 +1,5 @@
 from abc import ABC
-from typing import Any, Dict
+from typing import Any, Dict, List
 
 from src.property_finder.models import Agent
 from src.property_finder.services.agent_service import AgentService
@@ -32,5 +32,5 @@ class DeleteAgentUseCase(BaseAgentUseCase):
 
 
 class SearchAgentUseCase(BaseAgentUseCase):
-    def execute(self, pk: int, filters: Dict[str, Any]) -> Dict[str, Any]:
-        return self._service.search_agents(pk=pk, filters=filters)
+    def execute(self, query: str, **kwargs) -> List[Dict[str, Any]]:
+        return self._service.search_agents(query=query, **kwargs)

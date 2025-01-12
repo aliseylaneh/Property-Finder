@@ -80,13 +80,14 @@ class SearchPropertyApi(APIView):
     @extend_schema(parameters=[SearchPropertyInputSerializer], responses=SearchPropertyOutputSerializer, tags=['Property'])
     def get(self, request):
         try:
-
             serializer = SearchPropertyInputSerializer(data=request.query_params.dict())
             serializer.is_valid(raise_exception=True)
+
             result = self.usecase.execute(**serializer.validated_data)
 
             response_serializer = SearchPropertyOutputSerializer(data=result, context={'request': request}, many=True)
             response_serializer.is_valid(raise_exception=True)
+
             return Response(response_serializer.validated_data)
         except Exception as exception:
             return ErrorResponse(exception=exception)

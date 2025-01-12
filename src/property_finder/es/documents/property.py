@@ -1,8 +1,35 @@
 from django_elasticsearch_dsl import Document, fields
 from django_elasticsearch_dsl.registries import registry
 
-from config.settings.elasticsearch import property_settings
 from src.property_finder.models import Agent, Property, PropertyType
+
+property_settings = {
+    "number_of_shards": 3,
+    "number_of_replicas": 1,
+    "analysis": {
+        "filter": {
+            "property_synonym_filter": {
+                "type": "synonym",
+                "synonyms": [  # We can add more synonyms here for broadening search.
+                    "apartment, flat", "beds, bedrooms",
+                    "house, home", "wc, toilet,shower",
+                    "condo, condominium", "balcony, balconies"
+                ]
+            },
+            "property_stop_filter": {
+                "type": "stop",
+                "stopwords": ["a", "an", "the", "for", "of", "and", ]
+            }
+        },
+        "analyzer": {
+            "property_analyzer": {
+                "type": "custom",
+                "tokenizer": "standard",
+                "filter": ["lowercase", "property_synonym_filter", "property_stop_filter"]  # Enabling case-insensitive
+            }
+        }
+    }
+}
 
 
 @registry.register_document

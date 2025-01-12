@@ -1,4 +1,4 @@
-from typing import Any, Dict
+from typing import Any, Dict, List
 
 from src.property_finder.models import Agent
 from src.property_finder.repositories.django.agent import AgentDjangoRepository
@@ -23,5 +23,5 @@ class AgentService:
     def delete_agent(self, pk: int):
         self._django_repository.delete(pk=pk)
 
-    def search_agents(self, pk: int, filters: Dict[str, Any]) -> Dict[str, Any]:
-        return self._elastic_repository.search(pk=pk, filters=filters)
+    def search_agents(self, query: str, **kwargs) -> List[Dict[str, Any]]:
+        return self._elastic_repository.search(query=query, **kwargs)

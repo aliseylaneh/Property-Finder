@@ -3,10 +3,10 @@ from drf_spectacular.utils import extend_schema
 from rest_framework.response import Response
 from rest_framework.views import APIView
 
-from src.property_finder.usecases.agent import GetAgentUseCase
 from src.property_finder.apis.v1.serializers.agent import AgentOutputSerializer, CreateAgentInputSerializer, \
-    SearchAgentInputSerializer, UpdateAgentInputSerializer
+    SearchAgentInputSerializer, SearchAgentOutputSerializer, UpdateAgentInputSerializer
 from src.property_finder.usecases.agent import CreateAgentUseCase, DeleteAgentUseCase, SearchAgentUseCase, UpdateAgentUseCase
+from src.property_finder.usecases.agent import GetAgentUseCase
 
 
 class CreateAgentApi(APIView):
@@ -77,11 +77,17 @@ class SearchAgentApi(APIView):
         super(SearchAgentApi, self).__init__(**kwargs)
         self.usecase = SearchAgentUseCase()
 
-    @extend_schema(request=SearchAgentInputSerializer, responses=AgentOutputSerializer, tags=['Agent'])
+    @extend_schema(parameters=[SearchAgentInputSerializer], responses=SearchAgentOutputSerializer, tags=['Agent'])
     def get(self, request):
         try:
-            instance = self.usecase.execute()
-            response = AgentOutputSerializer(instance=instance, context={'request': request}).data
-            return Response(response)
+            serializer = SearchAgentInputSerializer(data=request.query_params.dict())
+            serializer.is_valid(raise_exception=True)
+
+            result = self.usecase.execute(**serializer.validated_data)
+
+            response_serializer = SearchAgentOutputSerializer(data=result, context={'request': request}, many=True)
+            response_serializer.is_valid(raise_exception=True)
+
+            return Response(response_serializer.validated_data)
         except Exception as exception:
             return ErrorResponse(exception=exception)

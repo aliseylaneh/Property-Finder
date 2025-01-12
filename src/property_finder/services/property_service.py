@@ -1,12 +1,12 @@
 from typing import Any, Dict, List
 
-from property_finder.models.events.events import DomainEventTypes, UpdateEvent, DeleteEvent
+from property_finder.models.events.events import DeleteEvent, DomainEventTypes, UpdateEvent
 from src.property_finder.models import Property
 from src.property_finder.repositories.django.agent import AgentDjangoRepository
 from src.property_finder.repositories.django.property import PropertyDjangoRepository
 from src.property_finder.repositories.django.property_type import PropertyTypeRepository
 from src.property_finder.repositories.es.es_property import PropertyElasticSearchRepository
-from src.property_finder.tasks.tasks import async_update_event, async_delete_event, async_send_email
+from src.property_finder.tasks.tasks import async_delete_event, async_send_email, async_update_event
 
 
 class PropertyService:

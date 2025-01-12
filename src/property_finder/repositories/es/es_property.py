@@ -9,7 +9,8 @@ from src.property_finder.models.exceptions.property import PropertyNotFound
 
 class PropertyElasticSearchRepository:
 
-    def index(self, pk: int, main_type: Dict[str, Any], sub_type: Dict[str, Any], title: str, description: str, agent: Dict[str, Any]) -> PropertyDocument:
+    def index(self, pk: int, main_type: Dict[str, Any], sub_type: Dict[str, Any], title: str, description: str,
+              agent: Dict[str, Any]) -> PropertyDocument:
         """
         Index a new property document in Elasticsearch.
         :param pk: Property Document ID
@@ -31,11 +32,12 @@ class PropertyElasticSearchRepository:
         property_document.save()
         return property_document
 
-    def search(self, query: str, **kwargs) -> List[Dict[str, Any]]:
+    def search(self, query: str, size: int = 10, page: int = 1) -> List[Dict[str, Any]]:
         """
         Perform a search query on the Property document.
         :param query: The query to search for
-        :**kwargs: Arbitrary keyword arguments which should include size and page for pagination
+        :param size: Number of results to return
+        :param page: Page number
         :return: Dict[str, Any]: Search results
         """
         search = PropertyDocument.search().query(
@@ -63,7 +65,7 @@ class PropertyElasticSearchRepository:
                 }
             ],
             boost_mode="sum"
-        ).extra(size=kwargs.get('size', 10), from_=(kwargs.get('page', 1) - 1) * kwargs.get('size', 10))
+        ).extra(size=size, from_=(page - 1) * size)
         results = search.execute()
         query_results = [{"id": hit.meta.id, "score": hit.meta.score, "title": hit.title, "main_type": hit.main_type.title,
                           "sub_type": hit.sub_type.title, "agent": hit.agent.name} for hit in results]

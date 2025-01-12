@@ -3,9 +3,9 @@ from typing import Any, Dict
 from django.db import transaction
 from django.db.models import QuerySet
 
-from src.property_finder.repositories.django.services import instance_update as InstanceUpdateService
 from src.property_finder.models import Agent
 from src.property_finder.models.exceptions.agent import AgentNotFound, InvalidPrimaryKey
+from src.property_finder.repositories.django.services import instance_update as InstanceUpdateService
 
 
 class AgentDjangoRepository:
