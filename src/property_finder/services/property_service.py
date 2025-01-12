@@ -50,7 +50,7 @@ class PropertyService:
             agent={"id": property_instance.agent.id, "name": property_instance.agent.name}
         )
 
-        # Sending an email including the property title an asscociated agent email into Kafka EMAIL_TOPIC
+        # Sending an email including the property title an associated agent email into Kafka EMAIL_TOPIC
         async_send_email.delay(property_title=property_instance.title, agent_email=property_instance.agent.email)
         return property_instance
 

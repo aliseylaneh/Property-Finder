@@ -1,4 +1,3 @@
-from adapter.celery import celery
 from config.env_conf.env import env
 
 # https://docs.celeryproject.org/en/stable/userguide/configuration.html
@@ -20,5 +19,4 @@ CELERY_ACCEPT_CONTENT = ['application/json']
 CELERY_TASK_SERIALIZER = 'json'
 CELERY_RESULT_SERIALIZER = 'json'
 CELERY_BROKER_CONNECTION_RETRY_ON_STARTUP = True
-
-celery.conf.timezone = "Asia/Tehran"
+CELERY_TASK_LOCK_EXPIRE = 36000
