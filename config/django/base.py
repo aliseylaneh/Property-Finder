@@ -77,7 +77,7 @@ WSGI_APPLICATION = 'config.wsgi.application'
 
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.postgresql',
+        'ENGINE': 'django.db.backends.postgresql_psycopg2',
         'NAME': env('DATABASE_NAME'),
         'USER': env('POSTGRES_USER'),
         'PASSWORD': env('POSTGRES_PASSWORD'),
@@ -85,7 +85,7 @@ DATABASES = {
         'PORT': env('PG_BOUNCER_PORT'),  # Using PgBouncer for instead of PostgreSQL directly, for connection pooling optimizations.
     }
 }
-
+DATABASES['default']['DISABLE_SERVER_SIDE_CURSORS'] = True
 DATABASES['default']['ATOMIC_REQUESTS'] = True
 
 # Password validation
