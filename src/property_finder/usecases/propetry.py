@@ -37,3 +37,8 @@ class DeletePropertyUseCase(BasePropertyUseCase):
 class SearchPropertyUseCase(BasePropertyUseCase):
     def execute(self, query: str, **kwargs) -> list[dict[str, Any]]:
         return self._service.search_property(query=query, **kwargs)
+
+
+class GetPropertyTypes(BasePropertyUseCase):
+    def execute(self):
+        return self._service.get_property_types()

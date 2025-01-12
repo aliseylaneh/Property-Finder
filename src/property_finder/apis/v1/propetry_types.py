@@ -3,19 +3,20 @@ from drf_spectacular.utils import extend_schema
 from rest_framework.response import Response
 from rest_framework.views import APIView
 
+from property_finder.apis.v1.serializers.property_type import PropertyTypeOutputSerializer
+from property_finder.usecases.propetry import GetPropertyTypes
+
 
 class GetAllPropertyTypeApi(APIView):
     def __init__(self, **kwargs):
         super(GetAllPropertyTypeApi, self).__init__(**kwargs)
-        self.usecase = CreatePropertyTypeUseCase()
+        self.usecase = GetPropertyTypes()
 
-    @extend_schema(request=CreatePropertyInputSerializer, responses=CreatePropertyOutputSerializer, tags=['Property'])
+    @extend_schema(responses=PropertyTypeOutputSerializer, tags=['Property Types'])
     def post(self, request):
         try:
-            serializer = CreatePropertyInputSerializer(data=request.data)
-            serializer.is_valid(raise_exception=True)
-            instance = self.usecase.execute(**request.data)
-            response = CreatePropertyOutputSerializer(instance=instance, context={'request': request}).data
+            result = self.usecase.execute()
+            response = PropertyTypeOutputSerializer(instance=result, context={'request': request}, many=True).data
             return Response(response)
         except Exception as exception:
             return ErrorResponse(exception=exception)

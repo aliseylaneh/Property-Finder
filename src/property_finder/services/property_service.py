@@ -136,3 +136,7 @@ class PropertyService:
         """
         query = self._elastic_property_repository.search(query=query, **kwargs)
         return query
+
+    def get_property_types(self):
+        query = self._property_type_repository.get_all()
+        return query
