@@ -6,7 +6,7 @@ from src.property_finder.repositories.django.agent import AgentDjangoRepository
 from src.property_finder.repositories.django.property import PropertyDjangoRepository
 from src.property_finder.repositories.django.property_type import PropertyTypeRepository
 from src.property_finder.repositories.es.es_property import PropertyElasticSearchRepository
-from src.property_finder.tasks.tasks import async_update_event, async_delete_event
+from src.property_finder.tasks.tasks import async_update_event, async_delete_event, async_send_email
 
 
 class PropertyService:
@@ -31,6 +31,7 @@ class PropertyService:
         :param description: Property description.
         :param agent: An Agent ID which will be associated to Property.
         """
+        # Creating new instance using Django Repository of Property for saving on PostgreSQL
         property_instance = self._django_property_repository.create(
             main_type=main_type,
             sub_type=sub_type,
@@ -38,6 +39,8 @@ class PropertyService:
             description=description,
             agent=agent,
         )
+
+        # Indexing on Elasticsearch the created instance.
         self._elastic_property_repository.index(
             pk=property_instance.pk,
             main_type={"id": property_instance.main_type.id, "title": property_instance.main_type.title},
@@ -46,6 +49,9 @@ class PropertyService:
             description=description,
             agent={"id": property_instance.agent.id, "name": property_instance.agent.name}
         )
+
+        # Sending an email including the property title an asscociated agent email into Kafka EMAIL_TOPIC
+        async_send_email.delay(property_title=property_instance.title, agent_email=property_instance.agent.email)
         return property_instance
 
     def find_property(self, pk: int) -> Property:

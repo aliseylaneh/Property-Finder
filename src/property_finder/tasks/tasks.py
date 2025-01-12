@@ -16,8 +16,10 @@ def async_publish_postgres_event(pk: int, event_type: str):
     :param event_type: Type of event that happened.
     """
     with ProxyProducerKafkaService() as producer:
-        producer.send(topic=KafkaTopics.POSTGRES_EVENT_LOGS_TOPIC, key=None,
-                      value={'pk': pk, 'event_type': event_type})
+        producer.send(
+            topic=KafkaTopics.POSTGRES_EVENT_LOGS_TOPIC, key=None,
+            value={'pk': pk, 'event_type': event_type}
+        )
 
 
 @celery.task
@@ -42,3 +44,12 @@ def async_delete_event(event: Dict[str, Any]):
     repository = globals()[event['repo_name']]
     repository().delete(pk=int(event['pk']))
     async_publish_postgres_event.delay(pk=event['pk'], event_type=event['event_type'])
+
+
+@celery.task
+def async_send_email(property_title: str, agent_email: str):
+    with ProxyProducerKafkaService() as producer:
+        producer.send(
+            topic=KafkaTopics.EMAIL_TOPIC, key=None,
+            value={"property_title": property_title, "agent_email": agent_email}
+        )

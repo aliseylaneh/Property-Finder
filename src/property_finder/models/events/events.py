@@ -19,9 +19,7 @@ class BaseEvent(BaseModel):
 class UpdateEvent(BaseEvent):
     pk: int
     updates: Dict[str, Any]
-    event_type: DomainEventTypes
 
 
 class DeleteEvent(BaseEvent):
     pk: int
-    event_type: DomainEventTypes
