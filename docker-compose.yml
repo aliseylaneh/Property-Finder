@@ -7,8 +7,8 @@ services:
     image: property_finder:latest
     container_name: property_finder
     entrypoint: [ "/bin/bash", "-c" ]
-    ports:
-      - "8000:8000"
+    expose:
+      - 8000
     command:
       - |
         sh "docker/web_entrypoint.sh"
@@ -118,6 +118,15 @@ services:
       KAFKA_CLUSTERS_0_NAME: property_finder
       KAFKA_CLUSTERS_0_BOOTSTRAPSERVERS: "kafka:9093"
 
+  nginx:
+    build: ./nginx
+    volumes:
+      - static-data:/staticfiles
+    ports:
+      - "80:80"
+    depends_on:
+      - app
+    restart: always
 
 volumes:
   es-data:
@@ -125,3 +134,4 @@ volumes:
   redis-data:
   kafka-ui-data:
   pgbouncer-data:
+  static-data:

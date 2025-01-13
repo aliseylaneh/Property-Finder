@@ -91,6 +91,8 @@ DATABASES['default']['ATOMIC_REQUESTS'] = True
 # Password validation
 # https://docs.djangoproject.com/en/3.0/ref/settings/#auth-password-validators
 
+DJANGO_SUPERUSER_PASSWORD = '1234'
+
 AUTH_PASSWORD_VALIDATORS = [
     {
         'NAME': 'django.contrib.auth.password_validation.UserAttributeSimilarityValidator',
@@ -122,7 +124,7 @@ USE_TZ = True
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/3.0/howto/static-files/
 
-STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
+STATIC_ROOT = '/staticfiles/'
 STATIC_URL = '/static/'
 STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
 
@@ -157,4 +159,4 @@ from config.settings.celery import *  # noqa
 from config.settings.swagger import *  # noqa
 from config.settings.kafka import *  # noqa
 from config.settings.elasticsearch import *  # noqa
-from adapter.asgi import *  # noqa
+from adapter.wsgi import *  # noqa
