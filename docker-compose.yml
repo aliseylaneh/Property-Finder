@@ -14,9 +14,7 @@ services:
         sh "docker/web_entrypoint.sh"
     depends_on:
       - db
-      - kafka
-      - redis
-      - elasticsearch
+      - pgbouncer
     restart: always
     env_file:
       - ./config/env_conf/.env
@@ -83,21 +81,6 @@ services:
     depends_on:
       - db
       - redis
-    restart: on-failure
-
-  beats:
-    image: property_finder:latest
-    container_name: beats
-    command: ./docker/beats_entrypoint.sh
-    environment:
-      - DATABASE_URL=psql://skyloov:skyloov1234@db:5432/property_finder
-      - CELERY_BROKER_URL=redis://redis:6379/0
-    volumes:
-      - .:/app
-    depends_on:
-      - db
-      - redis
-      - celery
     restart: on-failure
 
   kafka:

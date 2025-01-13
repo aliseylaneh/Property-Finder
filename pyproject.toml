@@ -20,11 +20,11 @@ django-redis = "5.4.0"
 django-microservice-common = "0.2.1"
 pydantic = "2.10.5"
 psycopg2-binary = "^2.9.10"
-uvicorn = "^0.34.0"
-kafka-python = "^2.0.2"
+kafka-python-ng = "^2.2.3"
 celery = { extras = ["redis"], version = "^5.4.0" }
 django-elasticsearch-dsl = "^8.0"
 django-redis-task-lock = "^0.7"
+gunicorn = "^23.0.0"
 
 
 [build-system]

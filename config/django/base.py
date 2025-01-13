@@ -81,7 +81,7 @@ DATABASES = {
         'NAME': env('DATABASE_NAME'),
         'USER': env('POSTGRES_USER'),
         'PASSWORD': env('POSTGRES_PASSWORD'),
-        'HOST': env('POSTGRES_HOST'),
+        'HOST': env('PG_BOUNCER_HOST'),
         'PORT': env('PG_BOUNCER_PORT'),  # Using PgBouncer for instead of PostgreSQL directly, for connection pooling optimizations.
     }
 }
