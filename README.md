@@ -71,16 +71,18 @@ The Repository pattern centralizes data access logic, making it easier to:
 ## Running the Application
 
 1. **Start Required Services**:
-   Use Docker compose to build and start services:
+   Use docker compose to build and start services:
    ```bash
    docker-compose build
    ```
 
-2. **Run application**
+2. **Run application**:
    You can run application by docker compose:
    ```bash
    docker compose up
    ```
+3. **Environment Variables**: I skipped environment variable configuration and implementing prepare_env.sh duo to limited time. Just
+   use hard code envs until I add dynamic env reading in future.
 
 ---
 
