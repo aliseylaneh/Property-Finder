@@ -1,6 +1,6 @@
 from django.urls import include, path
 
-from property_finder.apis.v1.propetry_types import GetAllPropertyTypeApi
+from src.property_finder.apis.v1.propetry_types import GetAllPropertyTypeApi
 from src.property_finder.apis.v1.agent import CreateAgentApi, DeleteAgentApi, SearchAgentApi, UpdateAgentApi
 from src.property_finder.apis.v1.agent import GetAgentApi
 from src.property_finder.apis.v1.property import CreatePropertyApi, DeletePropertyApi, GetPropertyApi, SearchPropertyApi, \

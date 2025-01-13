@@ -4,7 +4,7 @@ from kafka.errors import NoBrokersAvailable, KafkaError
 
 from adapter.celery import celery
 from adapter.kafka import KafkaTopics
-from property_finder.services.kafka_service import ProxyProducerKafkaService
+from src.property_finder.services.kafka_service import ProxyProducerKafkaService
 from src.property_finder.repositories.django import *  # noqa
 
 logger = logging.getLogger(__name__)

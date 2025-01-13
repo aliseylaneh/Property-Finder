@@ -3,7 +3,7 @@ from typing import Any, Dict
 
 from pydantic import BaseModel
 
-from property_finder.models.types.types import RepositoryModelType
+from src.property_finder.models.types.types import RepositoryModelType
 
 
 class DomainEventTypes(StrEnum):

@@ -3,7 +3,7 @@ from typing import Any, Dict, List, Tuple
 from elasticsearch import NotFoundError
 from elasticsearch_dsl.query import Q
 
-from property_finder.repositories.es.services import document_update as DocumentUpdateService
+from src.property_finder.repositories.es.services import document_update as DocumentUpdateService
 from src.property_finder.es.documents.agent import AgentDocument
 from src.property_finder.models.exceptions.agent import AgentNotFound
 from src.property_finder.repositories import AbstractRepository

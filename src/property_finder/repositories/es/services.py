@@ -1,6 +1,6 @@
 from typing import Any, Dict, List, Tuple
 
-from property_finder.models.types.types import ElasticsearchDocumentType
+from src.property_finder.models.types.types import ElasticsearchDocumentType
 
 
 def document_update(

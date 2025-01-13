@@ -3,8 +3,8 @@ from drf_spectacular.utils import extend_schema
 from rest_framework.response import Response
 from rest_framework.views import APIView
 
-from property_finder.apis.v1.serializers.property_type import PropertyTypeOutputSerializer
-from property_finder.usecases.propetry import GetPropertyTypes
+from src.property_finder.apis.v1.serializers.property_type import PropertyTypeOutputSerializer
+from src.property_finder.usecases.propetry import GetPropertyTypes
 
 
 class GetAllPropertyTypeApi(APIView):
