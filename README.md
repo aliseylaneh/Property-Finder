@@ -81,7 +81,7 @@ The Repository pattern centralizes data access logic, making it easier to:
    ```bash
    docker compose up
    ```
-3. **Environment Variables**: I skipped environment variable configuration and implementing prepare_env.sh duo to limited time. Just
+3. **Environment Variables**: I skipped environment variable configuration and implementing ```prepare_env.sh``` duo to limited time. Just
    use hard code envs until I add dynamic env reading in future.
 
 ---
