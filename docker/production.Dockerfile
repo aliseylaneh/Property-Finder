@@ -1,6 +1,6 @@
 # This docker file is used for production
 # Creating image based on official python3 image
-FROM python:3.13-rc-slim-bullseye
+FROM python:3.13-bullseye
 
 # Installing all python dependencies
 RUN pip install poetry
@@ -17,7 +17,4 @@ RUN poetry install --no-root
 
 # Get the django project into the docker container
 COPY . /app/
-
-RUN chmod +x ./docker/celery_entrypoint.sh
-RUN chmod +x ./docker/beats_entrypoint.sh
 

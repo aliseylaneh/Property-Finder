@@ -1,6 +1,6 @@
 # This docker file is used for local development via docker-compose
 # Creating image based on official python3 image
-FROM python:3.13
+FROM python:3.13-rc-slim-bullseye
 
 # Fix python printing
 ENV PYTHONUNBUFFERED 1

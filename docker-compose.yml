@@ -1,6 +1,25 @@
-version: "3.9"
-
 services:
+
+  app:
+    build:
+      context: .
+      dockerfile: docker/production.Dockerfile
+    image: property_finder:latest
+    container_name: property_finder
+    entrypoint: [ "/bin/bash", "-c" ]
+    ports:
+      - "8000:8000"
+    command:
+      - |
+        sh "docker/web_entrypoint.sh"
+    depends_on:
+      - db
+      - kafka
+      - redis
+      - elasticsearch
+    restart: always
+    env_file:
+      - ./config/env_conf/.env
   db:
     image: postgres:latest
     container_name: postgres
@@ -14,7 +33,7 @@ services:
       - postgres-data:/var/lib/postgresql/data
 
 
-  pgbouncer:
+  pgbouncer: #
     image: edoburu/pgbouncer:latest
     container_name: pgbouncer
     ports:
@@ -24,9 +43,10 @@ services:
     depends_on:
       - db
     environment:
-      POOL_MODE: transaction
-      MAX_DB_CONNECTIONS: 100
-      DEFAULT_POOL_SIZE: 40
+      POOL_MODE: transaction  # Sets the pool mode to `transaction`. In this mode, a database connection is allocated for the duration of a single transaction and returned to the pool afterward.
+      MAX_DB_CONNECTIONS: 100  # Specifies the maximum number of database connections that PgBouncer can manage simultaneously.
+      DEFAULT_POOL_SIZE: 40  # Sets the default number of connections allowed in each pool.
+
 
   elasticsearch:
     restart: always
@@ -52,9 +72,7 @@ services:
       - redis-data:/data
 
   celery:
-    build:
-      context: .
-      dockerfile: docker/production.Dockerfile
+    image: property_finder:latest
     container_name: worker
     command: ./docker/celery_entrypoint.sh
     environment:
@@ -68,9 +86,7 @@ services:
     restart: on-failure
 
   beats:
-    build:
-      context: .
-      dockerfile: docker/production.Dockerfile
+    image: property_finder:latest
     container_name: beats
     command: ./docker/beats_entrypoint.sh
     environment:
