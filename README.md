@@ -20,135 +20,105 @@ Elasticsearch for fast and accurate search results, ensuring users can easily di
 
 ## Technologies Used
 
-- **Python**: Version 3.13.
-- **Django**: Web framework for the presentation layer.
-- **Elasticsearch**: For indexing and searching data.
-- **PostgreSQL**: Relational database serving as the source of truth.
-- **Kafka**: Message broker for domain events handling.
-- **Celery**: Task queue for asynchronous operations.
-- **Redis**: Backend for Celery task processing.
-- **PgBouncer**: Connection pooling for PostgreSQL.
+1. **Python**
+2. **Django**
+3. **Elasticsearch**
+4. **PostgreSQL**
+5. **Kafka**
+6. **Celery**
+7. **Redis**
+8. **PgBouncer**
 
 ---
+
 ## Modules structures
+
 ```
 Directory structure:
 └── aliseylaneh-property-finder/
-    ├── README.md
     ├── docker-compose.yml
     ├── manage.py
-    ├── pyproject.toml
+    ├── pyproject.toml -> Poetry dependency manager.
     ├── .dockerignore
-    ├── adapter/
-    │   ├── __init__.py
+    ├── adapter/ -> This Module is resposible for third party dependencies.
     │   ├── celery.py
     │   ├── kafka.py
     │   └── wsgi.py
     ├── config/
-    │   ├── __init__.py
     │   ├── urls.py
     │   ├── django/
-    │   │   ├── __init__.py
-    │   │   ├── base.py # Django settings
-    │   │   ├── production.py
+    │   │   ├── base.py -> Django settings (as settings.py)
+    │   │   ├── production.py -> This production is also settings.py that include some extra configuration for Django.
     │   │   └── test.py
-    │   ├── env_conf/
-    │   │   ├── __init__.py
+    │   ├── env_conf/ -> Env configuration and module that loads environment variables from .env file.
     │   │   ├── env.py
     │   │   └── .env
-    │   └── settings/
-    │       ├── __init__.py
+    │   └── settings/ -> Independend settings related to third party applications.
     │       ├── celery.py
     │       ├── cors.py
     │       ├── elasticsearch.py
     │       ├── kafka.py
     │       └── swagger.py
-    ├── docker/
+    ├── docker/ -> Dockerfiles
     │   ├── beats_entrypoint.sh
     │   ├── celery_entrypoint.sh
     │   ├── local.Dockerfile
     │   ├── production.Dockerfile
     │   └── web_entrypoint.sh
-    ├── nginx/
+    ├── nginx/ -> Nginx configuration which is our web service and acts as reverse proxy.
     │   ├── Dockerfile
     │   └── nginx.conf
-    ├── pgbouncer/ # PgBouncer configuration which is bound into its related container in docker compose
+    ├── pgbouncer/ -> PgBouncer configuration which is bound into its related container in docker compose.
     │   ├── pgbouncer.ini
     │   └── userlist.txt
     └── src/
-        ├── __init__.py
         └── property_finder/
-            ├── __init__.py
-            ├── admin.py
-            ├── apps.py
-            ├── urls.py
-            ├── apis/
-            │   ├── __init__.py
+            ├── apis/ -> Presentaion layer including APIViews and Serializers.
             │   └── v1/
-            │       ├── __init__.py
             │       ├── agent.py
             │       ├── property.py
             │       ├── propetry_types.py
             │       ├── urls.py
             │       └── serializers/
-            │           ├── __init__.py
-            │           ├── agent.py
-            │           ├── property.py
-            │           └── property_type.py
-            ├── es/ # All Elasticserach Documents are placed here.
-            │   ├── __init__.py
+            ├── es/ -> All Elasticserach Documents are placed here.
             │   └── documents/
-            │       ├── __init__.py
             │       ├── agent.py
             │       └── property.py
             ├── migrations/
-            │   ├── 0001_initial.py
-            │   └── __init__.py
             ├── models/
-            │   ├── __init__.py
-            │   ├── events/ # Specific events that are published in kafka as source of logs (Just for simulating what happed)
-            │   │   ├── __init__.py
+            │   ├── events/ -> Specific events that are published in kafka as source of logs (Just for simulating what happed).
             │   │   └── events.py
-            │   ├── exceptions/ # Custom expections for implemented use cases are placed here
-            │   │   ├── __init__.py
+            │   ├── exceptions/ -> Custom expections for implemented use cases are placed here.
             │   │   ├── agent.py
             │   │   ├── events.py
             │   │   ├── property.py
             │   │   └── property_type.py
             │   ├── models/
-            │   │   ├── __init__.py
             │   │   ├── agent.py
             │   │   ├── property.py
             │   │   └── validators/
             │   │       ├── __init__.py
             │   │       └── agent.py
-            │   └── types/
-            │       ├── __init__.py
+            │   └── types/ -> Custom variable type.
             │       └── types.py
             ├── repositories/
-            │   ├── __init__.py
-            │   ├── django/
-            │   │   ├── __init__.py
+            │   ├── django/ -> Repositories related to Django persistance layer with PostgreSQL.
             │   │   ├── agent.py
             │   │   ├── property.py
             │   │   ├── property_type.py
             │   │   └── services.py
-            │   └── es/
-            │       ├── __init__.py
+            │   └── es/ -> Repositories related to Elasticsearch.  
             │       ├── es_agent.py
             │       ├── es_property.py
             │       └── services.py
-            ├── services/
-            │   ├── __init__.py
+            ├── services/ -> Core services that provide business logic of our system usecases.
             │   ├── agent_service.py
             │   ├── email_service.py
             │   ├── kafka_service.py
             │   └── property_service.py
-            ├── tasks/ #Celery tasks are implemented here.
-            │   ├── __init__.py
+            ├── tasks/ -> Celery tasks are implemented here.
             │   └── tasks.py
-            └── usecases/
-                ├── __init__.py
+            └── usecases/ -> Use cases which are used by Presentation layer (apis module)
                 ├── agent.py
                 └── propetry.py
 ```
@@ -205,14 +175,16 @@ The Repository pattern centralizes data access logic, making it easier to:
    ```bash
    docker compose up
    ```
-3. **Environment Variables**: I skipped environment variable configuration and implementing ```prepare_env.sh``` duo to limited time. Just
+3. **Environment Variables**: I skipped environment variable configuration and implementing ```prepare_env.sh``` duo to limited
+   time. Just
    use hard code envs until I add dynamic env reading in future.
 
 ---
 
 # Explanation of Property Service [As Service layer Example]
 
-This implementation demonstrates the business logic from interacting with repositories to running asynchronous processes using Celery
+This implementation demonstrates the business logic from interacting with repositories to running asynchronous processes using
+Celery
 for non-blocking operations such as updating or deleting data. It ensures data consistency between PostgreSQL and Elasticsearch.
 PostgreSQL serves as the source of truth, while Elasticsearch provides search capabilities.
 
@@ -286,13 +258,18 @@ Searches properties in Elasticsearch based on the given query.
 
 Retrieves all property types from PostgreSQL.
 
-## Dependencies
+## PgBouncer
+PgBouncer is used for managing connection pooling such as closing dangling ones, reusing them and, etc.
+```yaml
+    environment:
+      POOL_MODE: transaction  
+      MAX_DB_CONNECTIONS: 100
+      DEFAULT_POOL_SIZE: 40 
 
-- **PostgreSQL**: Source of truth for property information.
-- **Elasticsearch**: Provides search capabilities for properties.
-- **Kafka**: Used for event logging and messaging.
-- **Celery**: Handles asynchronous tasks for non-blocking operations.
-
+```
+1. POOL_MODE: Sets the pool mode to `transaction`. In this mode, a database connection is allocated for the duration of a single transaction and returned to the pool afterward.
+2. MAX_DB_CONNECTIONS: Specifies the maximum number of database connections that PgBouncer can manage simultaneously.
+3. DEFAULT_POOL_SIZE: Sets the default number of connections allowed in each pool.
 ## Key Features
 
 - Maintains data consistency between PostgreSQL and Elasticsearch.
@@ -305,3 +282,7 @@ Retrieves all property types from PostgreSQL.
 You can access API swagger UI by opening ```localhost``` in your browser, or accessing below postman collection.
 
 https://www.postman.com/aliseylaneh/ali-seylaneh/collection/u6759hu/property-finder-api?action=share&creator=32296300
+
+## Future implementation
+1. Reading environment variables dynamically using prepare_env.sh from a file or github/gitlab repository.
+2. Dedicated email consumer as an independent process alongside my application.
