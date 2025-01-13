@@ -56,8 +56,6 @@ Directory structure:
     │       ├── kafka.py
     │       └── swagger.py
     ├── docker/ -> Dockerfiles and Entrypoint for seperate services.
-    │   ├── beats_entrypoint.sh
-    │   ├── celery_entrypoint.sh
     │   ├── local.Dockerfile
     │   ├── production.Dockerfile
     │   └── web_entrypoint.sh
@@ -228,32 +226,44 @@ Searches properties in Elasticsearch based on the given query.
 #### `get_property_types()`
 
 Retrieves all property types from PostgreSQL.
+
 ## Key Features
 
 - Maintains data consistency between PostgreSQL and Elasticsearch.
 - Uses asynchronous operations for better performance.
 - Supports search functionality using Elasticsearch.
 - Handles updates and deletions efficiently with minimal downtime for users.
+
 ## PgBouncer Configurations
+
 PgBouncer is used for managing connection pooling such as closing dangling ones, reusing them and, etc.
-It has two place to set its configuration one in docker compose container env like below one, and second is ``pgbouncer/pgbouncer.ini`` file located in source of project.
+It has two place to set its configuration one in docker compose container env like below one, and second is
+``pgbouncer/pgbouncer.ini`` file located in source of project.
+
 ```yaml
     environment:
-      POOL_MODE: transaction  
+      POOL_MODE: transaction
       MAX_DB_CONNECTIONS: 100
-      DEFAULT_POOL_SIZE: 40 
+      DEFAULT_POOL_SIZE: 40
 
 ```
-1. POOL_MODE: Sets the pool mode to `transaction`. In this mode, a database connection is allocated for the duration of a single transaction and returned to the pool afterward.
+
+1. POOL_MODE: Sets the pool mode to `transaction`. In this mode, a database connection is allocated for the duration of a single
+   transaction and returned to the pool afterward.
 2. MAX_DB_CONNECTIONS: Specifies the maximum number of database connections that PgBouncer can manage simultaneously.
 3. DEFAULT_POOL_SIZE: Sets the default number of connections allowed in each pool.
 
 ## Kafka Issue
-The package ``kafka-python`` already has some issues with python versions, and due to this issue the contributors recommended to use ``kafka-python-ng`` that's why you would find this confusing when packages are being installed from poetry packages.
+
+The package ``kafka-python`` already has some issues with python versions, and due to this issue the contributors recommended to use
+``kafka-python-ng`` that's why you would find this confusing when packages are being installed from poetry packages.
 reference:
-https://github.com/dpkp/kafka-python/tree/master 
+https://github.com/dpkp/kafka-python/tree/master
 
+# Usage
 
+The application is served by Nginx on ``localhost`` on port 80 these settings can be implemented dynamically in near future.
+You can use ``Django panel admin`` by accessing ``localhost/admin/``. The dedicated user is ``admin`` with password ``1234``
 
 ## API Collection Documentation
 
@@ -262,5 +272,6 @@ You can access API swagger UI by opening ```localhost``` in your browser, or acc
 https://www.postman.com/aliseylaneh/ali-seylaneh/collection/u6759hu/property-finder-api?action=share&creator=32296300
 
 ## Future implementation
-1. Reading environment variables dynamically using prepare_env.sh from a file or github/gitlab repository.
+
+1. Reading environment variables dynamically using prepare_env.sh from a file or GitHub/Gitlab repository.
 2. Dedicated email consumer as an independent process alongside my application.

@@ -18,3 +18,4 @@ RUN poetry install --no-root
 # Get the django project into the docker container
 COPY . /app/
 
+RUN chmod +x ./docker/celery_entrypoint.sh

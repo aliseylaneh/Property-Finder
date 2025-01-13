@@ -72,7 +72,7 @@ services:
   celery:
     image: property_finder:latest
     container_name: worker
-    command: ./docker/celery_entrypoint.sh
+    command: celery -A src.property_finder.tasks worker -l info
     environment:
       - DATABASE_URL=psql://skyloov:skyloov1234@db:5432/property_finder
       - CELERY_BROKER_URL=redis://redis:6379/0
