@@ -30,6 +30,130 @@ Elasticsearch for fast and accurate search results, ensuring users can easily di
 - **PgBouncer**: Connection pooling for PostgreSQL.
 
 ---
+## Modules structures
+```
+Directory structure:
+└── aliseylaneh-property-finder/
+    ├── README.md
+    ├── docker-compose.yml
+    ├── manage.py
+    ├── pyproject.toml
+    ├── .dockerignore
+    ├── adapter/
+    │   ├── __init__.py
+    │   ├── celery.py
+    │   ├── kafka.py
+    │   └── wsgi.py
+    ├── config/
+    │   ├── __init__.py
+    │   ├── urls.py
+    │   ├── django/
+    │   │   ├── __init__.py
+    │   │   ├── base.py # Django settings
+    │   │   ├── production.py
+    │   │   └── test.py
+    │   ├── env_conf/
+    │   │   ├── __init__.py
+    │   │   ├── env.py
+    │   │   └── .env
+    │   └── settings/
+    │       ├── __init__.py
+    │       ├── celery.py
+    │       ├── cors.py
+    │       ├── elasticsearch.py
+    │       ├── kafka.py
+    │       └── swagger.py
+    ├── docker/
+    │   ├── beats_entrypoint.sh
+    │   ├── celery_entrypoint.sh
+    │   ├── local.Dockerfile
+    │   ├── production.Dockerfile
+    │   └── web_entrypoint.sh
+    ├── nginx/
+    │   ├── Dockerfile
+    │   └── nginx.conf
+    ├── pgbouncer/ # PgBouncer configuration which is bound into its related container in docker compose
+    │   ├── pgbouncer.ini
+    │   └── userlist.txt
+    └── src/
+        ├── __init__.py
+        └── property_finder/
+            ├── __init__.py
+            ├── admin.py
+            ├── apps.py
+            ├── urls.py
+            ├── apis/
+            │   ├── __init__.py
+            │   └── v1/
+            │       ├── __init__.py
+            │       ├── agent.py
+            │       ├── property.py
+            │       ├── propetry_types.py
+            │       ├── urls.py
+            │       └── serializers/
+            │           ├── __init__.py
+            │           ├── agent.py
+            │           ├── property.py
+            │           └── property_type.py
+            ├── es/ # All Elasticserach Documents are placed here.
+            │   ├── __init__.py
+            │   └── documents/
+            │       ├── __init__.py
+            │       ├── agent.py
+            │       └── property.py
+            ├── migrations/
+            │   ├── 0001_initial.py
+            │   └── __init__.py
+            ├── models/
+            │   ├── __init__.py
+            │   ├── events/ # Specific events that are published in kafka as source of logs (Just for simulating what happed)
+            │   │   ├── __init__.py
+            │   │   └── events.py
+            │   ├── exceptions/ # Custom expections for implemented use cases are placed here
+            │   │   ├── __init__.py
+            │   │   ├── agent.py
+            │   │   ├── events.py
+            │   │   ├── property.py
+            │   │   └── property_type.py
+            │   ├── models/
+            │   │   ├── __init__.py
+            │   │   ├── agent.py
+            │   │   ├── property.py
+            │   │   └── validators/
+            │   │       ├── __init__.py
+            │   │       └── agent.py
+            │   └── types/
+            │       ├── __init__.py
+            │       └── types.py
+            ├── repositories/
+            │   ├── __init__.py
+            │   ├── django/
+            │   │   ├── __init__.py
+            │   │   ├── agent.py
+            │   │   ├── property.py
+            │   │   ├── property_type.py
+            │   │   └── services.py
+            │   └── es/
+            │       ├── __init__.py
+            │       ├── es_agent.py
+            │       ├── es_property.py
+            │       └── services.py
+            ├── services/
+            │   ├── __init__.py
+            │   ├── agent_service.py
+            │   ├── email_service.py
+            │   ├── kafka_service.py
+            │   └── property_service.py
+            ├── tasks/ #Celery tasks are implemented here.
+            │   ├── __init__.py
+            │   └── tasks.py
+            └── usecases/
+                ├── __init__.py
+                ├── agent.py
+                └── propetry.py
+```
+
+---
 
 ## Architecture
 
