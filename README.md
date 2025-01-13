@@ -257,9 +257,15 @@ Searches properties in Elasticsearch based on the given query.
 #### `get_property_types()`
 
 Retrieves all property types from PostgreSQL.
+## Key Features
 
-## PgBouncer
+- Maintains data consistency between PostgreSQL and Elasticsearch.
+- Uses asynchronous operations for better performance.
+- Supports search functionality using Elasticsearch.
+- Handles updates and deletions efficiently with minimal downtime for users.
+## PgBouncer Configurations
 PgBouncer is used for managing connection pooling such as closing dangling ones, reusing them and, etc.
+It has two place to set its configuration one in docker compose container env like below one, and second is ``pgbouncer/pgbouncer.ini`` file located in source of project.
 ```yaml
     environment:
       POOL_MODE: transaction  
@@ -270,12 +276,13 @@ PgBouncer is used for managing connection pooling such as closing dangling ones,
 1. POOL_MODE: Sets the pool mode to `transaction`. In this mode, a database connection is allocated for the duration of a single transaction and returned to the pool afterward.
 2. MAX_DB_CONNECTIONS: Specifies the maximum number of database connections that PgBouncer can manage simultaneously.
 3. DEFAULT_POOL_SIZE: Sets the default number of connections allowed in each pool.
-## Key Features
 
-- Maintains data consistency between PostgreSQL and Elasticsearch.
-- Uses asynchronous operations for better performance.
-- Supports search functionality using Elasticsearch.
-- Handles updates and deletions efficiently with minimal downtime for users.
+## Kafka Issue
+The package ``kafka-python`` already has some issues with python versions, and due to this issue the contributors recommended to use ``kafka-python-ng`` that's why you would find this confusing when packages are being installed from poetry packages.
+reference:
+https://github.com/dpkp/kafka-python/tree/master 
+
+
 
 ## API Collection Documentation
 
