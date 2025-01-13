@@ -41,15 +41,11 @@ Directory structure:
     ├── pyproject.toml -> Poetry dependency manager.
     ├── .dockerignore
     ├── adapter/ -> This Module is resposible for third party dependencies.
-    │   ├── celery.py
-    │   ├── kafka.py
-    │   └── wsgi.py
     ├── config/
     │   ├── urls.py
     │   ├── django/
     │   │   ├── base.py -> Django settings (as settings.py)
     │   │   ├── production.py -> This production is also settings.py that include some extra configuration for Django.
-    │   │   └── test.py
     │   ├── env_conf/ -> Env configuration and module that loads environment variables from .env file.
     │   │   ├── env.py
     │   │   └── .env
@@ -59,18 +55,16 @@ Directory structure:
     │       ├── elasticsearch.py
     │       ├── kafka.py
     │       └── swagger.py
-    ├── docker/ -> Dockerfiles
+    ├── docker/ -> Dockerfiles and Entrypoint for seperate services.
     │   ├── beats_entrypoint.sh
     │   ├── celery_entrypoint.sh
     │   ├── local.Dockerfile
     │   ├── production.Dockerfile
     │   └── web_entrypoint.sh
     ├── nginx/ -> Nginx configuration which is our web service and acts as reverse proxy.
-    │   ├── Dockerfile
-    │   └── nginx.conf
     ├── pgbouncer/ -> PgBouncer configuration which is bound into its related container in docker compose.
     │   ├── pgbouncer.ini
-    │   └── userlist.txt
+    │   └── userlist.txt -> PostgreSQL users and their credential are save heere.
     └── src/
         └── property_finder/
             ├── apis/ -> Presentaion layer including APIViews and Serializers.
@@ -89,38 +83,15 @@ Directory structure:
             │   ├── events/ -> Specific events that are published in kafka as source of logs (Just for simulating what happed).
             │   │   └── events.py
             │   ├── exceptions/ -> Custom expections for implemented use cases are placed here.
-            │   │   ├── agent.py
-            │   │   ├── events.py
-            │   │   ├── property.py
-            │   │   └── property_type.py
-            │   ├── models/
-            │   │   ├── agent.py
-            │   │   ├── property.py
-            │   │   └── validators/
-            │   │       ├── __init__.py
-            │   │       └── agent.py
+            │   ├── models/ -> Django models
             │   └── types/ -> Custom variable type.
             │       └── types.py
             ├── repositories/
             │   ├── django/ -> Repositories related to Django persistance layer with PostgreSQL.
-            │   │   ├── agent.py
-            │   │   ├── property.py
-            │   │   ├── property_type.py
-            │   │   └── services.py
             │   └── es/ -> Repositories related to Elasticsearch.  
-            │       ├── es_agent.py
-            │       ├── es_property.py
-            │       └── services.py
             ├── services/ -> Core services that provide business logic of our system usecases.
-            │   ├── agent_service.py
-            │   ├── email_service.py
-            │   ├── kafka_service.py
-            │   └── property_service.py
             ├── tasks/ -> Celery tasks are implemented here.
-            │   └── tasks.py
             └── usecases/ -> Use cases which are used by Presentation layer (apis module)
-                ├── agent.py
-                └── propetry.py
 ```
 
 ---
