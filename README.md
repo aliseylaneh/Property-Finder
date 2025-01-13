@@ -131,7 +131,7 @@ The Repository pattern centralizes data access logic, making it easier to:
 
 ---
 
-## Running the Application
+## Running the Application [Usage]
 
 1. **Start Required Services**:
    Use docker compose to build and start services:
@@ -146,7 +146,11 @@ The Repository pattern centralizes data access logic, making it easier to:
    ```
 3. **Environment Variables**: I skipped environment variable configuration and implementing ```prepare_env.sh``` duo to limited
    time. Just
-   use hard code envs until I add dynamic env reading in future.
+   use hard code envs until I add dynamic env reading in the future.
+
+4. **Usage**
+   The application is served by Nginx on ``localhost`` on port 80 these settings can be implemented dynamically in near future.
+   You can use ``Django panel admin`` by accessing ``localhost/admin/``. The dedicated user is ``admin`` with password ``1234``
 
 ---
 
@@ -259,11 +263,6 @@ The package ``kafka-python`` already has some issues with python versions, and d
 ``kafka-python-ng`` that's why you would find this confusing when packages are being installed from poetry packages.
 reference:
 https://github.com/dpkp/kafka-python/tree/master
-
-# Usage
-
-The application is served by Nginx on ``localhost`` on port 80 these settings can be implemented dynamically in near future.
-You can use ``Django panel admin`` by accessing ``localhost/admin/``. The dedicated user is ``admin`` with password ``1234``
 
 ## API Collection Documentation
 
